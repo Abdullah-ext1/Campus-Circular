@@ -19,21 +19,20 @@ import AdminPanel from "./components/AdminPanel.jsx";
 import CampusDashboard from "./components/CampusDashboard.jsx";
 import CommunityBoard from "./components/CommunityBoard.jsx";
 import CategoryIcon from "./components/CategoryIcon.jsx";
-import ProductDetailPage from "./components/ProductDetailPage.jsx";
-import PublicProfile from "./components/PublicProfile.jsx";
-import NeedFinder from "./components/NeedFinder.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
+import { parseIntentWithGroq } from "./utils/groqApi.js";
 
 export const AppContext = createContext();
 
 function CampusAppShell() {
   // Navigation & View State
   const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
-  const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement | createListing
+  const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement
   const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isParsingIntent, setIsParsingIntent] = useState(false);
 
   // Active User (Default Siddharth Joshi id:8)
   const [currentUser, setCurrentUser] = useState(students[7]);
@@ -43,6 +42,26 @@ function CampusAppShell() {
   const [selectedKit, setSelectedKit] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
   const [activeBorrowing, setActiveBorrowing] = useState(sampleBorrowings[0]);
+
+  // Persistent Catalog Resources list
+  const [catalogResources, setCatalogResources] = useState(() => {
+    const saved = localStorage.getItem("cc_resources");
+    return saved ? JSON.parse(saved) : resources;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cc_resources", JSON.stringify(catalogResources));
+  }, [catalogResources]);
+
+  const handleAddResource = (newRes) => {
+    setCatalogResources((prev) => [newRes, ...prev]);
+  };
+
+  const handleDeleteResource = (resId) => {
+    setCatalogResources((prev) => prev.filter((r) => r.id !== resId));
+  };
+
+  const userResources = catalogResources.filter((r) => r.ownerId === currentUser.id);
 
   // Persistent Borrowings list from localStorage or fallback to sampleBorrowings
   const [borrowings, setBorrowings] = useState(() => {
@@ -55,11 +74,18 @@ function CampusAppShell() {
   }, [borrowings]);
 
   // Navigation Handlers
-  const handleSearchIntent = (queryText) => {
+  const handleSearchIntent = async (queryText) => {
     setSearchQuery(queryText);
-    const matched = findMatchingKit(queryText);
-    setSelectedKit(matched);
-    setCurrentSubScreen("kit");
+    setIsParsingIntent(true);
+    try {
+      const matched = await parseIntentWithGroq(queryText);
+      setSelectedKit(matched);
+      setCurrentSubScreen("kit");
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setIsParsingIntent(false);
+    }
   };
 
   const handleSelectResource = (resource) => {
@@ -127,20 +153,12 @@ function CampusAppShell() {
         />
 
         <main className="app-main container-padded" style={{ flex: 1 }}>
-          {/* CREATE LISTING OVERRIDE */}
-          {currentSubScreen === "createListing" ? (
-            <CreateListing
-              onBack={() => setCurrentSubScreen(null)}
-              onSubmitSuccess={() => setCurrentSubScreen(null)}
-            />
-          ) : (
+          {/* HOME TAB */}
+          {activeTab === "home" && (
             <>
-              {/* HOME TAB */}
-              {activeTab === "home" && (
-                <>
-                  {!currentSubScreen && (
-                    <CommandBar onSearch={handleSearchIntent} />
-                  )}
+              {!currentSubScreen && (
+                <CommandBar onSearch={handleSearchIntent} />
+              )}
 
                   {currentSubScreen === "kit" && (
                     <KitRecommendation
@@ -171,15 +189,15 @@ function CampusAppShell() {
                 </>
               )}
 
-              {/* BROWSE TAB */}
-              {activeTab === "browse" && (
+          {/* BROWSE TAB */}
+          {activeTab === "browse" && (
+            <>
+              {!currentSubScreen && (
                 <>
-                  {!currentSubScreen && (
-                    <>
-                      <ResourceGrid onSelectResource={handleSelectResource} />
-                      <CommunityBoard />
-                    </>
-                  )}
+                  <ResourceGrid onSelectResource={handleSelectResource} />
+                  <CommunityBoard />
+                </>
+              )}
 
                   {currentSubScreen === "detail" && (
                     <ResourceDetail
@@ -190,16 +208,16 @@ function CampusAppShell() {
                     />
                   )}
 
-                  {currentSubScreen === "agreement" && (
-                    <BorrowingAgreement
-                      resource={selectedResource}
-                      borrower={currentUser}
-                      onBack={() => setCurrentSubScreen("detail")}
-                      onConfirm={handleConfirmAgreement}
-                    />
-                  )}
-                </>
+              {currentSubScreen === "agreement" && (
+                <BorrowingAgreement
+                  resource={selectedResource}
+                  borrower={currentUser}
+                  onBack={() => setCurrentSubScreen("detail")}
+                  onConfirm={handleConfirmAgreement}
+                />
               )}
+            </>
+          )}
 
               {/* ACTIVITY TAB */}
               {activeTab === "activity" && (

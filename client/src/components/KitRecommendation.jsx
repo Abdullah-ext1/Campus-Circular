@@ -36,13 +36,13 @@ export default function KitRecommendation({ kit, query, onBack, onSelectResource
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
           <div>
             <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.8rem" }}>
-              AI MATCHED GEAR BUNDLE
+              {kit.isAiGenerated ? "⚡ GROQ AI MATCHED BUNDLE" : "CAMPUS RECOMENDED BUNDLE"}
             </span>
             <h1 className="font-serif" style={{ color: "var(--receipt)", marginTop: "8px" }}>
-              {kit.name}
+              {kit.kitName || kit.name || "Custom Equipment Kit"}
             </h1>
             <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginTop: "4px" }}>
-              {kit.description}
+              {kit.kitDescription || kit.description || "Bundled campus resources tailored to your search intent."}
             </p>
           </div>
 
