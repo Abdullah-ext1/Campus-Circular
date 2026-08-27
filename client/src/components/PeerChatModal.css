@@ -1,0 +1,355 @@
+/* ============================================
+   CAMPUS CIRCULAR — Peer Negotiation Messenger CSS
+   ============================================ */
+
+.peer-chat-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  z-index: 9999;
+}
+
+.peer-chat-card {
+  background: #ffffff;
+  border: 1.5px solid #111111;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  height: 600px;
+  max-height: 88vh;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+/* Header */
+.peer-chat-header {
+  padding: 14px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid #eeeeee;
+  background: #fafafa;
+}
+
+.peer-header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.peer-avatar-wrap {
+  position: relative;
+}
+
+.peer-chat-avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid #e0e0e0;
+}
+
+.online-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #257a4a;
+  border: 2px solid #ffffff;
+}
+
+.peer-name-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.peer-chat-name {
+  font-size: 0.95rem;
+  color: #111111;
+}
+
+.peer-chat-dept {
+  font-size: 0.73rem;
+  color: #666666;
+}
+
+.peer-chat-close-btn {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #eeeeee;
+  color: #444444;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.peer-chat-close-btn:hover {
+  background: #dddddd;
+  color: #000000;
+}
+
+/* Item Context Banner */
+.peer-chat-item-banner {
+  padding: 10px 16px;
+  background: #f4f4f4;
+  border-bottom: 1px solid #e5e5e5;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.peer-item-thumb {
+  width: 36px;
+  height: 36px;
+  border-radius: 6px;
+  object-fit: cover;
+  border: 1px solid #dcdcdc;
+}
+
+.peer-item-details {
+  flex: 1;
+}
+
+.peer-item-title {
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #111111;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.peer-item-price {
+  font-size: 0.72rem;
+  color: #555555;
+  margin-top: 1px;
+}
+
+.negotiated-pill {
+  background: #257a4a;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* Chat Body */
+.peer-chat-body {
+  flex: 1;
+  padding: 16px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background: #ffffff;
+}
+
+.chat-message-row {
+  display: flex;
+  width: 100%;
+}
+
+.chat-message-row.user-sent {
+  justify-content: flex-end;
+}
+
+.chat-message-row.peer-received {
+  justify-content: flex-start;
+}
+
+.chat-bubble {
+  max-width: 80%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  font-size: 0.88rem;
+  line-height: 1.4;
+  position: relative;
+}
+
+.user-sent .chat-bubble {
+  background: #111111;
+  color: #ffffff;
+  border-bottom-right-radius: 4px;
+}
+
+.peer-received .chat-bubble {
+  background: #f0f0f0;
+  color: #111111;
+  border-bottom-left-radius: 4px;
+}
+
+.chat-meta {
+  font-size: 0.65rem;
+  margin-top: 4px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  justify-content: flex-end;
+}
+
+.user-sent .chat-meta {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.peer-received .chat-meta {
+  color: #888888;
+}
+
+.typing-bubble {
+  background: #f4f4f4;
+  color: #777777;
+  font-size: 0.75rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.typing-dots {
+  font-weight: bold;
+  animation: pulse 1s infinite;
+}
+
+/* Lender Offer Card */
+.lender-offer-card {
+  margin-top: 10px;
+  background: #ffffff;
+  border: 1px solid #111111;
+  border-radius: 8px;
+  padding: 12px;
+  color: #111111;
+}
+
+.offer-badge {
+  font-size: 0.68rem;
+  font-weight: 700;
+  color: #257a4a;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 4px;
+}
+
+.offer-price-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.strike {
+  text-decoration: line-through;
+  color: #888888;
+  font-size: 0.8rem;
+}
+
+.deal-price {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #111111;
+}
+
+.accept-deal-btn {
+  width: 100%;
+  background: #111111;
+  color: #ffffff;
+  padding: 8px 12px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.accept-deal-btn:hover {
+  background: #333333;
+}
+
+/* Quick Negotiate Chips */
+.peer-quick-negotiate-chips {
+  padding: 8px 16px;
+  background: #fafafa;
+  border-top: 1px solid #eeeeee;
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+.negotiate-chip {
+  padding: 4px 10px;
+  background: #ffffff;
+  border: 1px solid #dddddd;
+  border-radius: 9999px;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #333333;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.negotiate-chip:hover {
+  border-color: #111111;
+  background: #111111;
+  color: #ffffff;
+}
+
+/* Footer Input */
+.peer-chat-footer {
+  padding: 12px 16px;
+  background: #ffffff;
+  border-top: 1px solid #eeeeee;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.peer-chat-input {
+  flex: 1;
+  background: #f4f4f4;
+  border: 1px solid #d4d4d4;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  color: #111111;
+}
+
+.peer-chat-input:focus {
+  background: #ffffff;
+  border-color: #000000;
+}
+
+.peer-chat-send-btn {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  background: #111111;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  flex-shrink: 0;
+}
+
+.peer-chat-send-btn:hover:not(:disabled) {
+  background: #333333;
+}
+
+.peer-chat-send-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}

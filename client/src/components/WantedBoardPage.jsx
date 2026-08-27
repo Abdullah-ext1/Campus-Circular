@@ -19,12 +19,14 @@ import {
   Tag,
   ShieldCheck,
   Send,
+  Zap,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import TrustBadge from "./TrustBadge.jsx";
 import CategoryIcon from "./CategoryIcon.jsx";
 import AccessibilityWidget from "./AccessibilityWidget.jsx";
+import PeerChatModal from "./PeerChatModal.jsx";
 import "./WantedBoardPage.css";
 
 const INITIAL_WANTED_POSTS = [
@@ -243,7 +245,7 @@ export default function WantedBoardPage() {
       description: "",
       tagsInput: "",
     });
-    showToast("Hardware Request posted live to Campus Board! 🚀");
+    showToast("Hardware Request posted live to Campus Board.");
   };
 
   const handleUpvote = (id) => {
@@ -273,7 +275,7 @@ export default function WantedBoardPage() {
     );
 
     setIsLendModalOpen(false);
-    showToast(`Your lending offer sent to ${activePostToLend.studentName}! 🎉`);
+    showToast(`Your lending offer sent to ${activePostToLend.studentName}.`);
   };
 
   // Filtered Posts
@@ -433,21 +435,24 @@ export default function WantedBoardPage() {
               onClick={() => setSelectedUrgency("urgent")}
               aria-pressed={selectedUrgency === "urgent"}
             >
-              🚨 Urgent (24h)
+              <Flame size={13} style={{ marginRight: "4px", verticalAlign: "middle" }} />
+              <span>Urgent (24h)</span>
             </button>
             <button
               className={`wanted-filter-chip ${selectedUrgency === "normal" ? "active" : ""}`}
               onClick={() => setSelectedUrgency("normal")}
               aria-pressed={selectedUrgency === "normal"}
             >
-              ⏱ This Week
+              <Clock size={13} style={{ marginRight: "4px", verticalAlign: "middle" }} />
+              <span>This Week</span>
             </button>
             <button
               className={`wanted-filter-chip ${selectedUrgency === "flexible" ? "active" : ""}`}
               onClick={() => setSelectedUrgency("flexible")}
               aria-pressed={selectedUrgency === "flexible"}
             >
-              💡 Semester Flexible
+              <Sparkles size={13} style={{ marginRight: "4px", verticalAlign: "middle" }} />
+              <span>Flexible</span>
             </button>
           </div>
         </div>
@@ -514,16 +519,16 @@ export default function WantedBoardPage() {
 
                   <div className="wanted-card-badges">
                     {post.urgency === "urgent" ? (
-                      <span className="wanted-urgency-badge urgent font-mono">
-                        🚨 URGENT
+                      <span className="wanted-urgency-badge urgent font-mono" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <Flame size={11} /> URGENT
                       </span>
                     ) : post.urgency === "normal" ? (
-                      <span className="wanted-urgency-badge normal font-mono">
-                        ⏱ THIS WEEK
+                      <span className="wanted-urgency-badge normal font-mono" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <Clock size={11} /> THIS WEEK
                       </span>
                     ) : (
-                      <span className="wanted-urgency-badge flexible font-mono">
-                        💡 FLEXIBLE
+                      <span className="wanted-urgency-badge flexible font-mono" style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <Sparkles size={11} /> FLEXIBLE
                       </span>
                     )}
                   </div>
@@ -659,9 +664,9 @@ export default function WantedBoardPage() {
                       value={newPost.urgency}
                       onChange={(e) => setNewPost({ ...newPost, urgency: e.target.value })}
                     >
-                      <option value="urgent">🚨 Urgent (Within 24h)</option>
-                      <option value="normal">⏱ Normal (This Week)</option>
-                      <option value="flexible">💡 Flexible (Semester)</option>
+                      <option value="urgent">Urgent (Within 24h)</option>
+                      <option value="normal">Normal (This Week)</option>
+                      <option value="flexible">Flexible (Semester)</option>
                     </select>
                   </div>
                 </div>

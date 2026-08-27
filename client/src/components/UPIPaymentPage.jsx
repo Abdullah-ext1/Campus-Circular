@@ -17,6 +17,7 @@ import {
 import { resources, getStudent } from "../data/mockData.js";
 import { useAuth } from "../contexts/AuthContext.jsx";
 import AccessibilityWidget from "./AccessibilityWidget.jsx";
+import upiQrImage from "../assets/upi_qr.jpg";
 import "./UPIPaymentPage.css";
 
 export default function UPIPaymentPage() {
@@ -42,7 +43,7 @@ export default function UPIPaymentPage() {
   const [paymentSubmitted, setPaymentSubmitted] = useState(false);
   const [isProcessing, setIsProcessing] = useState(false);
 
-  const upiId = "campuscircular@icici";
+  const upiId = "ammarshaikh09909@okaxis";
 
   // Countdown timer
   useEffect(() => {
@@ -188,63 +189,18 @@ export default function UPIPaymentPage() {
                 {/* QR Code Container */}
                 <div className="qr-frame-wrapper">
                   <div className="qr-box">
-                    {/* SVG Realistic UPI QR Pattern */}
-                    <svg viewBox="0 0 200 200" width="180" height="180" className="qr-svg" role="img" aria-label="UPI Payment QR Code">
-                      {/* Corner Position Detection Squares */}
-                      <rect x="10" y="10" width="50" height="50" fill="#000" rx="4" />
-                      <rect x="18" y="18" width="34" height="34" fill="#fff" rx="2" />
-                      <rect x="26" y="26" width="18" height="18" fill="#000" rx="2" />
-
-                      <rect x="140" y="10" width="50" height="50" fill="#000" rx="4" />
-                      <rect x="148" y="18" width="34" height="34" fill="#fff" rx="2" />
-                      <rect x="156" y="26" width="18" height="18" fill="#000" rx="2" />
-
-                      <rect x="10" y="140" width="50" height="50" fill="#000" rx="4" />
-                      <rect x="18" y="148" width="34" height="34" fill="#fff" rx="2" />
-                      <rect x="26" y="156" width="18" height="18" fill="#000" rx="2" />
-
-                      {/* Random Matrix Modules */}
-                      <rect x="70" y="15" width="10" height="10" fill="#000" />
-                      <rect x="90" y="15" width="10" height="10" fill="#000" />
-                      <rect x="110" y="15" width="10" height="10" fill="#000" />
-                      <rect x="70" y="35" width="10" height="10" fill="#000" />
-                      <rect x="100" y="35" width="10" height="10" fill="#000" />
-                      <rect x="120" y="35" width="10" height="10" fill="#000" />
-
-                      <rect x="15" y="70" width="10" height="10" fill="#000" />
-                      <rect x="35" y="70" width="10" height="10" fill="#000" />
-                      <rect x="55" y="70" width="10" height="10" fill="#000" />
-                      <rect x="85" y="70" width="30" height="10" fill="#000" />
-                      <rect x="135" y="70" width="10" height="10" fill="#000" />
-                      <rect x="165" y="70" width="20" height="10" fill="#000" />
-
-                      <rect x="70" y="90" width="60" height="20" fill="#000" rx="4" />
-                      <rect x="75" y="95" width="50" height="10" fill="#fff" rx="2" />
-
-                      <rect x="15" y="100" width="20" height="10" fill="#000" />
-                      <rect x="45" y="100" width="10" height="10" fill="#000" />
-                      <rect x="145" y="100" width="20" height="10" fill="#000" />
-                      <rect x="175" y="100" width="10" height="10" fill="#000" />
-
-                      <rect x="70" y="125" width="10" height="10" fill="#000" />
-                      <rect x="90" y="125" width="10" height="10" fill="#000" />
-                      <rect x="110" y="125" width="20" height="10" fill="#000" />
-
-                      <rect x="70" y="145" width="20" height="10" fill="#000" />
-                      <rect x="100" y="145" width="10" height="10" fill="#000" />
-                      <rect x="120" y="145" width="20" height="10" fill="#000" />
-                      <rect x="150" y="145" width="10" height="10" fill="#000" />
-                      <rect x="170" y="145" width="15" height="10" fill="#000" />
-
-                      <rect x="70" y="165" width="30" height="10" fill="#000" />
-                      <rect x="115" y="165" width="10" height="10" fill="#000" />
-                      <rect x="140" y="165" width="20" height="10" fill="#000" />
-                      <rect x="170" y="165" width="15" height="10" fill="#000" />
-                    </svg>
-
-                    <div className="qr-center-badge font-mono">
-                      CAMPUS UPI
-                    </div>
+                    <img
+                      src={upiQrImage}
+                      alt="Google Pay / PhonePe UPI QR Code for Ammar"
+                      className="real-upi-qr-img"
+                      style={{
+                        width: "240px",
+                        height: "auto",
+                        borderRadius: "8px",
+                        display: "block",
+                        objectFit: "contain",
+                      }}
+                    />
                   </div>
 
                   <div className="qr-amount-pill font-mono">

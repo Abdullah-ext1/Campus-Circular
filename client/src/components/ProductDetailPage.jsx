@@ -1,12 +1,24 @@
-import React from "react";
+import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Star, ShieldCheck, CheckCircle2, ChevronRight, MapPin, Compass } from "lucide-react";
+import { 
+  ArrowLeft, 
+  Star, 
+  ShieldCheck, 
+  CheckCircle2, 
+  ChevronRight, 
+  MapPin, 
+  Compass, 
+  MessageSquare 
+} from "lucide-react";
 import { getResource, getStudent } from "../data/mockData.js";
+import PeerChatModal from "./PeerChatModal.jsx";
 import "./ProductDetailPage.css";
 
 export default function ProductDetailPage() {
   const { id } = useParams();
   const navigate = useNavigate();
+
+  const [isChatOpen, setIsChatOpen] = useState(false);
 
   const resourceId = parseInt(id, 10) || 1;
   const resource = getResource(resourceId);
@@ -201,20 +213,48 @@ export default function ProductDetailPage() {
               </div>
             </div>
 
-            {/* CTA Button */}
-            <div className="product-cta-group">
+            {/* CTA Buttons */}
+            <div className="product-cta-group" style={{ display: "flex", gap: "12px", flexWrap: "wrap" }}>
               <button
                 className="btn-borrow-now"
+                style={{ flex: 1.2 }}
                 onClick={handleStartBorrowing}
                 aria-label={`Initiate borrowing agreement for ${resource.name}`}
               >
                 <span>Draft Borrowing Agreement</span>
                 <ChevronRight size={18} />
               </button>
+
+              <button
+                type="button"
+                className="btn-secondary"
+                style={{
+                  padding: "14px 20px",
+                  borderRadius: "12px",
+                  fontWeight: 700,
+                  display: "inline-flex",
+                  alignItems: "center",
+                  gap: "8px",
+                  border: "1.5px solid #111111",
+                }}
+                onClick={() => setIsChatOpen(true)}
+                aria-label={`Chat and negotiate terms with ${owner.name}`}
+              >
+                <MessageSquare size={18} />
+                <span>Chat & Negotiate</span>
+              </button>
             </div>
           </div>
         </div>
       </main>
+
+      {/* Peer Chat / Negotiation Modal */}
+      <PeerChatModal
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        recipient={owner}
+        item={resource}
+      />
 
       {/* Minimal Footer */}
       <footer className="product-footer" role="contentinfo">
