@@ -18,6 +18,7 @@ import CategoryIcon from "./components/CategoryIcon.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
+import { parseIntentWithGroq } from "./utils/groqApi.js";
 
 export const AppContext = createContext();
 
@@ -27,6 +28,7 @@ export default function App() {
   const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement
   const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isParsingIntent, setIsParsingIntent] = useState(false);
 
   // Active User (Default Siddharth Joshi id:8)
   const [currentUser, setCurrentUser] = useState(students[7]);
@@ -48,11 +50,18 @@ export default function App() {
   }, [borrowings]);
 
   // Navigation Handlers
-  const handleSearchIntent = (queryText) => {
+  const handleSearchIntent = async (queryText) => {
     setSearchQuery(queryText);
-    const matched = findMatchingKit(queryText);
-    setSelectedKit(matched);
-    setCurrentSubScreen("kit");
+    setIsParsingIntent(true);
+    try {
+      const matched = await parseIntentWithGroq(queryText);
+      setSelectedKit(matched);
+      setCurrentSubScreen("kit");
+    } catch (err) {
+      console.error("Search error:", err);
+    } finally {
+      setIsParsingIntent(false);
+    }
   };
 
   const handleSelectResource = (resource) => {
@@ -121,7 +130,7 @@ export default function App() {
           {activeTab === "home" && (
             <>
               {!currentSubScreen && (
-                <CommandBar onSearch={handleSearchIntent} />
+                <CommandBar onSearch={handleSearchIntent} isParsingIntent={isParsingIntent} />
               )}
 
               {currentSubScreen === "kit" && (

@@ -3,17 +3,18 @@ import { Zap } from "lucide-react";
 import CategoryIcon from "./CategoryIcon.jsx";
 import { suggestedQueries, recentActivity, getStudent, getResource } from "../data/mockData.js";
 
-export default function CommandBar({ onSearch }) {
+export default function CommandBar({ onSearch, isParsingIntent = false }) {
   const [inputQuery, setInputQuery] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (inputQuery.trim()) {
+    if (inputQuery.trim() && !isParsingIntent) {
       onSearch(inputQuery.trim());
     }
   };
 
   const handlePillClick = (queryText) => {
+    if (isParsingIntent) return;
     setInputQuery(queryText);
     onSearch(queryText);
   };
@@ -29,7 +30,7 @@ export default function CommandBar({ onSearch }) {
           What do you need?
         </h1>
         <p style={{ color: "var(--receipt-dim)", fontSize: "1.05rem", marginTop: "8px" }}>
-          Type your intent in plain language. We'll assemble a bundled resource kit from trusted campus peers.
+          Type your intent in plain language. Groq AI parses intent to match cameras, tripods, lights & gear bundles.
         </p>
       </div>
 
@@ -40,7 +41,7 @@ export default function CommandBar({ onSearch }) {
             display: "flex",
             alignItems: "center",
             background: "var(--carbon)",
-            border: "2px solid var(--slate)",
+            border: isParsingIntent ? "2px solid var(--ledger-gold)" : "2px solid var(--slate)",
             borderRadius: "var(--radius-lg)",
             padding: "8px 16px",
             boxShadow: "var(--paper-shadow)",
@@ -55,7 +56,8 @@ export default function CommandBar({ onSearch }) {
           <input
             type="text"
             className="font-sans"
-            placeholder="e.g. 'I need to make a reel for my club event tomorrow'"
+            disabled={isParsingIntent}
+            placeholder="e.g. 'reel shoot kit' or 'need camera and tripod for event'"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             style={{
@@ -63,11 +65,21 @@ export default function CommandBar({ onSearch }) {
               fontSize: "1.1rem",
               color: "var(--receipt)",
               padding: "8px 0",
+              opacity: isParsingIntent ? 0.7 : 1,
             }}
             autoFocus
           />
-          <button type="submit" className="btn-primary" style={{ padding: "8px 20px", fontSize: "0.95rem" }}>
-            Dispatch →
+          <button
+            type="submit"
+            disabled={isParsingIntent}
+            className="btn-primary"
+            style={{
+              padding: "8px 20px",
+              fontSize: "0.95rem",
+              opacity: isParsingIntent ? 0.8 : 1,
+            }}
+          >
+            {isParsingIntent ? "⚡ Parsing Groq AI..." : "Dispatch →"}
           </button>
         </div>
       </form>
