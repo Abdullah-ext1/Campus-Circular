@@ -7,29 +7,31 @@ export default function UserProfile({ student }) {
   const { trustBreakdown } = student;
 
   return (
-    <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "0 auto" }}>
+    <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "20px auto 40px" }}>
       {/* Header Profile Card */}
       <div
         className="paper-card"
         style={{
-          background: "var(--carbon)",
-          border: "var(--border-slate)",
-          padding: "28px",
+          background: "#ffffff",
+          border: "1px solid #e0e0e0",
+          borderRadius: "14px",
+          padding: "32px",
           marginBottom: "24px",
+          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.04)",
         }}
       >
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "20px" }}>
           <div style={{ display: "flex", alignItems: "center", gap: "20px" }}>
             <div
               className="avatar-circle"
-              style={{ width: "72px", height: "72px", fontSize: "1.8rem", border: "2px solid var(--ledger-gold)" }}
+              style={{ width: "72px", height: "72px", fontSize: "1.8rem", background: "#111111", color: "#ffffff", border: "2px solid #111111" }}
             >
               {student.initials}
             </div>
 
             <div>
               <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                <h1 className="font-serif" style={{ fontSize: "2rem", color: "var(--receipt)" }}>
+                <h1 className="font-serif" style={{ fontSize: "2rem", color: "#111111" }}>
                   {student.name}
                 </h1>
                 {student.verified ? (
@@ -43,10 +45,10 @@ export default function UserProfile({ student }) {
                 )}
               </div>
 
-              <div style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginTop: "4px" }}>
+              <div style={{ color: "#666666", fontSize: "0.95rem", marginTop: "4px" }}>
                 {student.dept} • Year {student.year} • {student.room}
               </div>
-              <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)", marginTop: "4px" }}>
+              <div className="font-mono" style={{ fontSize: "0.75rem", color: "#888888", marginTop: "4px" }}>
                 Campus Member since {student.joinedMonth}
               </div>
             </div>
@@ -54,7 +56,7 @@ export default function UserProfile({ student }) {
 
           <div style={{ textAlign: "center" }}>
             <TrustBadge score={student.trustScore} size="lg" showVerified={student.verified} />
-            <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "6px" }}>
+            <div className="font-mono" style={{ fontSize: "0.72rem", color: "#888888", marginTop: "6px" }}>
               CUMULATIVE TRUST SCORE
             </div>
           </div>
@@ -68,43 +70,43 @@ export default function UserProfile({ student }) {
             gap: "12px",
             marginTop: "24px",
             paddingTop: "20px",
-            borderTop: "var(--border-slate)",
+            borderTop: "1px solid #eeeeee",
             textAlign: "center",
           }}
         >
-          <div style={{ background: "rgba(0,0,0,0.2)", padding: "12px", borderRadius: "var(--radius-sm)" }}>
-            <div className="font-mono" style={{ fontSize: "1.4rem", color: "var(--ledger-gold)", fontWeight: "bold" }}>
+          <div style={{ background: "#f8f8f8", padding: "14px", borderRadius: "8px", border: "1px solid #eeeeee" }}>
+            <div className="font-mono" style={{ fontSize: "1.4rem", color: "#111111", fontWeight: "bold" }}>
               {student.borrowCount}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>Borrowed</div>
+            <div style={{ fontSize: "0.75rem", color: "#666666", marginTop: "2px" }}>Borrowed</div>
           </div>
 
-          <div style={{ background: "rgba(0,0,0,0.2)", padding: "12px", borderRadius: "var(--radius-sm)" }}>
-            <div className="font-mono" style={{ fontSize: "1.4rem", color: "var(--trust-green)", fontWeight: "bold" }}>
+          <div style={{ background: "#f8f8f8", padding: "14px", borderRadius: "8px", border: "1px solid #eeeeee" }}>
+            <div className="font-mono" style={{ fontSize: "1.4rem", color: "#257a4a", fontWeight: "bold" }}>
               {student.lendCount}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>Lent Out</div>
+            <div style={{ fontSize: "0.75rem", color: "#666666", marginTop: "2px" }}>Lent Out</div>
           </div>
 
-          <div style={{ background: "rgba(0,0,0,0.2)", padding: "12px", borderRadius: "var(--radius-sm)" }}>
-            <div className="font-mono" style={{ fontSize: "1.4rem", color: "var(--receipt)", fontWeight: "bold" }}>
+          <div style={{ background: "#f8f8f8", padding: "14px", borderRadius: "8px", border: "1px solid #eeeeee" }}>
+            <div className="font-mono" style={{ fontSize: "1.4rem", color: "#111111", fontWeight: "bold" }}>
               ★ {student.avgRating}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>Rating</div>
+            <div style={{ fontSize: "0.75rem", color: "#666666", marginTop: "2px" }}>Rating</div>
           </div>
 
-          <div style={{ background: "rgba(0,0,0,0.2)", padding: "12px", borderRadius: "var(--radius-sm)" }}>
+          <div style={{ background: "#f8f8f8", padding: "14px", borderRadius: "8px", border: "1px solid #eeeeee" }}>
             <div
               className="font-mono"
               style={{
                 fontSize: "1.4rem",
-                color: student.lateReturns > 0 ? "var(--stamp-red)" : "var(--trust-green)",
+                color: student.lateReturns > 0 ? "#d9383a" : "#257a4a",
                 fontWeight: "bold",
               }}
             >
               {student.lateReturns}
             </div>
-            <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>Late Returns</div>
+            <div style={{ fontSize: "0.75rem", color: "#666666", marginTop: "2px" }}>Late Returns</div>
           </div>
         </div>
       </div>
@@ -113,15 +115,17 @@ export default function UserProfile({ student }) {
       <div
         className="paper-card"
         style={{
-          background: "var(--carbon)",
-          border: "var(--border-slate)",
-          padding: "24px",
+          background: "#ffffff",
+          border: "1px solid #e0e0e0",
+          borderRadius: "14px",
+          padding: "28px",
           marginBottom: "24px",
+          boxShadow: "0 4px 16px rgba(0, 0, 0, 0.04)",
         }}
       >
-        <h3 className="font-serif" style={{ fontSize: "1.2rem", color: "var(--receipt)", marginBottom: "16px" }}>
+        <h2 className="font-serif" style={{ fontSize: "1.2rem", color: "#111111", marginBottom: "18px" }}>
           Trust Metric Breakdown
-        </h3>
+        </h2>
 
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
           {[
@@ -132,18 +136,18 @@ export default function UserProfile({ student }) {
           ].map((metric, i) => (
             <div key={i}>
               <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.85rem", marginBottom: "6px" }}>
-                <span>{metric.label}</span>
-                <span className="font-mono" style={{ color: "var(--ledger-gold)" }}>
+                <span style={{ color: "#333333" }}>{metric.label}</span>
+                <span className="font-mono" style={{ color: "#111111", fontWeight: 700 }}>
                   {metric.val} / 100
                 </span>
               </div>
-              <div style={{ height: "8px", background: "var(--slate)", borderRadius: "var(--radius-full)", overflow: "hidden" }}>
+              <div style={{ height: "8px", background: "#f0f0f0", borderRadius: "999px", overflow: "hidden" }}>
                 <div
                   style={{
                     height: "100%",
                     width: `${metric.val}%`,
-                    background: "var(--ledger-gold)",
-                    borderRadius: "var(--radius-full)",
+                    background: "#111111",
+                    borderRadius: "999px",
                     transition: "width 0.6s ease",
                   }}
                 />

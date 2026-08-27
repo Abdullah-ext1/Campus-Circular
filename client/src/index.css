@@ -261,6 +261,10 @@ h3 { font-size: 1.25rem; }
   border-color: #111111;
 }
 
+.dropdown-item-btn:hover {
+  background: #f4f4f4 !important;
+}
+
 .avatar-circle {
   width: 30px;
   height: 30px;

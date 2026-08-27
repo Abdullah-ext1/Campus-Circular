@@ -16,10 +16,6 @@ import LifecycleTracker from "./components/LifecycleTracker.jsx";
 import UserProfile from "./components/UserProfile.jsx";
 import ConditionReport from "./components/ConditionReport.jsx";
 import SettlementPanel from "./components/SettlementPanel.jsx";
-import ResourceGrid from "./components/ResourceGrid.jsx";
-import AdminPanel from "./components/AdminPanel.jsx";
-import CampusDashboard from "./components/CampusDashboard.jsx";
-import CommunityBoard from "./components/CommunityBoard.jsx";
 import CategoryIcon from "./components/CategoryIcon.jsx";
 import ProductDetailPage from "./components/ProductDetailPage.jsx";
 import PublicProfile from "./components/PublicProfile.jsx";
@@ -42,9 +38,8 @@ function CampusAppShell({ defaultSubScreen = null }) {
   const params = useParams();
 
   // Navigation & View State
-  const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
+  const [activeTab, setActiveTab] = useState("home"); // home | activity | profile
   const [currentSubScreen, setCurrentSubScreen] = useState(defaultSubScreen);
-  const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(user?.role === "admin");
   const [isParsingIntent, setIsParsingIntent] = useState(false);
 
@@ -61,6 +56,7 @@ function CampusAppShell({ defaultSubScreen = null }) {
   useEffect(() => {
     const targetResourceId = params.resourceId || location.state?.resourceId;
     const targetSubScreen = defaultSubScreen || location.state?.subScreen;
+    const targetTab = location.state?.targetTab;
 
     if (targetResourceId) {
       const res = getResource(parseInt(targetResourceId, 10));
@@ -71,6 +67,11 @@ function CampusAppShell({ defaultSubScreen = null }) {
       }
     } else if (targetSubScreen) {
       setCurrentSubScreen(targetSubScreen);
+    }
+
+    if (targetTab) {
+      setActiveTab(targetTab);
+      setCurrentSubScreen(null);
     }
   }, [params.resourceId, location.state, defaultSubScreen]);
 
@@ -170,11 +171,10 @@ function CampusAppShell({ defaultSubScreen = null }) {
 
         <Header
           currentUser={currentUser}
-          onOpenDashboard={() => setShowDashboard(true)}
           isAdmin={isAdmin}
           onToggleAdmin={() => setIsAdmin(!isAdmin)}
-          onOpenProfile={() => {
-            setActiveTab("profile");
+          onNavigateTab={(tabId) => {
+            setActiveTab(tabId);
             setCurrentSubScreen(null);
           }}
           onCreateListing={() => {
@@ -190,10 +190,10 @@ function CampusAppShell({ defaultSubScreen = null }) {
             />
           ) : (
             <>
-              {/* HOME TAB */}
+              {/* DISPATCH (HOME) TAB */}
               {activeTab === "home" && (
                 <>
-                  {!currentSubScreen && <CommandBar onSearch={handleSearchIntent} />}
+                  {!currentSubScreen && <CommandBar onSearch={handleSearchIntent} isParsingIntent={isParsingIntent} />}
 
                   {currentSubScreen === "kit" && (
                     <KitRecommendation
@@ -224,45 +224,15 @@ function CampusAppShell({ defaultSubScreen = null }) {
                 </>
               )}
 
-              {/* BROWSE TAB */}
-              {activeTab === "browse" && (
-                <>
-                  {!currentSubScreen && (
-                    <>
-                      <ResourceGrid onSelectResource={handleSelectResource} />
-                      <CommunityBoard />
-                    </>
-                  )}
-
-                  {currentSubScreen === "detail" && (
-                    <ResourceDetail
-                      resource={selectedResource}
-                      onBack={() => setCurrentSubScreen(null)}
-                      onStartBorrowing={handleStartAgreement}
-                      onSelectResource={handleSelectResource}
-                    />
-                  )}
-
-                  {currentSubScreen === "agreement" && (
-                    <BorrowingAgreement
-                      resource={selectedResource}
-                      borrower={currentUser}
-                      onBack={() => setCurrentSubScreen(null)}
-                      onConfirm={handleConfirmAgreement}
-                    />
-                  )}
-                </>
-              )}
-
               {/* ACTIVITY TAB */}
               {activeTab === "activity" && (
                 <>
                   {!currentSubScreen && (
-                    <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "0 auto" }}>
-                      <h1 className="font-serif" style={{ color: "var(--receipt)", marginBottom: "8px" }}>
+                    <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "20px auto 40px" }}>
+                      <h1 className="font-serif" style={{ color: "#111111", marginBottom: "8px" }}>
                         Active Campus Borrowings
                       </h1>
-                      <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginBottom: "24px" }}>
+                      <p style={{ color: "#666666", fontSize: "0.95rem", marginBottom: "24px" }}>
                         Track state transitions and condition inspection protocols.
                       </p>
 
@@ -277,13 +247,15 @@ function CampusAppShell({ defaultSubScreen = null }) {
                               onClick={() => handleOpenTracker(b)}
                               style={{
                                 background: "#ffffff",
-                                border: b.isLate ? "1px solid var(--stamp-red)" : "1px solid var(--slate)",
+                                border: b.isLate ? "1px solid #d9383a" : "1px solid #e0e0e0",
                                 padding: "20px",
+                                borderRadius: "12px",
                                 cursor: "pointer",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
                                 transition: "all 0.2s ease",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.03)",
                               }}
                               role="button"
                               tabIndex={0}
@@ -294,7 +266,7 @@ function CampusAppShell({ defaultSubScreen = null }) {
                                   style={{
                                     padding: "10px",
                                     background: "#f4f4f4",
-                                    borderRadius: "var(--radius-md)",
+                                    borderRadius: "8px",
                                     color: "#111111",
                                   }}
                                 >
@@ -304,10 +276,10 @@ function CampusAppShell({ defaultSubScreen = null }) {
                                   <div className="font-mono" style={{ fontSize: "0.75rem", color: "#666666", fontWeight: 600 }}>
                                     {b.id}
                                   </div>
-                                  <h3 className="font-sans" style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--receipt)" }}>
+                                  <h3 className="font-sans" style={{ fontSize: "1.1rem", fontWeight: 700, color: "#111111" }}>
                                     {res?.name}
                                   </h3>
-                                  <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
+                                  <div style={{ fontSize: "0.85rem", color: "#666666" }}>
                                     Lender: {owner?.name} • Due: {formatDate(b.timestamps.due)}
                                   </div>
                                 </div>
@@ -331,7 +303,7 @@ function CampusAppShell({ defaultSubScreen = null }) {
                                     PHASE {b.currentState + 1}/10
                                   </span>
                                 )}
-                                <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "6px" }}>
+                                <div className="font-mono" style={{ fontSize: "0.75rem", color: "#666666", marginTop: "6px" }}>
                                   Open Tracker →
                                 </div>
                               </div>
@@ -368,14 +340,9 @@ function CampusAppShell({ defaultSubScreen = null }) {
 
               {/* PROFILE TAB */}
               {activeTab === "profile" && <UserProfile student={currentUser} />}
-
-              {/* ADMIN TAB */}
-              {activeTab === "admin" && <AdminPanel />}
             </>
           )}
         </main>
-
-        {showDashboard && <CampusDashboard onClose={() => setShowDashboard(false)} />}
 
         <TabBar
           activeTab={activeTab}
@@ -410,7 +377,7 @@ export default function App() {
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/create" element={<CampusAppShell defaultSubScreen="createListing" />} />
           <Route path="/app/borrow/:resourceId" element={<CampusAppShell />} />
-          <Route path="/app/track/:borrowingId" element={<CampusAppShell />} />
+          <Route path="/app/track/:borrowingId" element={<CampusAppShell defaultSubScreen="tracker" />} />
           <Route path="/app/*" element={<CampusAppShell />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

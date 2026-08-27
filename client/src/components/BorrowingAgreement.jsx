@@ -68,25 +68,28 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
   };
 
   return (
-    <div className="animate-slide-up" style={{ maxWidth: "740px", margin: "0 auto" }}>
-      {/* Top Controls */}
+    <div className="animate-slide-up" style={{ maxWidth: "740px", margin: "20px auto 40px" }}>
+      {/* Top Navigation */}
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
-        <button className="btn-secondary" onClick={onBack}>
+        <button className="btn-secondary" onClick={onBack} style={{ display: "inline-flex", alignItems: "center", gap: "6px" }}>
           ← Back to Resource
         </button>
-        <span className="font-mono" style={{ fontSize: "0.8rem", color: "var(--receipt-dim)" }}>
-          OFFICIAL CAMPUS CONTRACT
+        <span className="font-mono" style={{ fontSize: "0.78rem", color: "#666666", letterSpacing: "1px", textTransform: "uppercase" }}>
+          Official Peer Contract
         </span>
       </div>
 
-      {/* Main Document Paper Card */}
+      {/* Main Document Card */}
       <div
-        className="paper-card perforated-edge"
+        className="paper-card"
         style={{
-          background: "var(--receipt)",
-          color: "var(--receipt-text)",
-          padding: "32px",
+          background: "#ffffff",
+          color: "#111111",
+          border: "1px solid #e0e0e0",
+          borderRadius: "14px",
+          padding: "36px",
           position: "relative",
+          boxShadow: "0 10px 30px rgba(0, 0, 0, 0.05)",
         }}
       >
         {/* Stamp Overlay on Confirmation */}
@@ -94,20 +97,26 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
           <div
             style={{
               position: "absolute",
-              top: "40%",
+              top: "45%",
               left: "50%",
-              transform: "translate(-50%, -50%) rotate(-12deg)",
+              transform: "translate(-50%, -50%) rotate(-10deg)",
               zIndex: 20,
               animation: "stampIn 0.4s ease-out forwards",
             }}
           >
             <div
-              className="stamp stamp-green font-serif"
               style={{
-                fontSize: "2rem",
+                fontSize: "1.8rem",
                 padding: "16px 32px",
-                borderWidth: "4px",
-                boxShadow: "0 0 20px rgba(59,138,90,0.4)",
+                border: "4px solid #111111",
+                background: "#ffffff",
+                color: "#111111",
+                fontFamily: "var(--font-serif)",
+                fontWeight: 700,
+                textTransform: "uppercase",
+                letterSpacing: "2px",
+                boxShadow: "0 8px 32px rgba(0,0,0,0.2)",
+                borderRadius: "8px",
               }}
             >
               ✓ AGREEMENT SEALED
@@ -116,15 +125,30 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
         )}
 
         {/* Contract Header */}
-        <div style={{ textAlign: "center", marginBottom: "24px", borderBottom: "2px solid var(--receipt-text)", paddingBottom: "16px" }}>
-          <div className="stamp stamp-red font-serif" style={{ fontSize: "0.9rem", marginBottom: "8px" }}>
-            PEER BORROWING AGREEMENT
+        <div style={{ textAlign: "center", marginBottom: "28px", borderBottom: "2px solid #111111", paddingBottom: "20px" }}>
+          <div
+            style={{
+              display: "inline-block",
+              background: "#f4f4f4",
+              border: "1px solid #d4d4d4",
+              color: "#111111",
+              fontSize: "0.75rem",
+              fontWeight: 700,
+              fontFamily: "var(--font-mono)",
+              padding: "4px 12px",
+              borderRadius: "4px",
+              marginBottom: "10px",
+              letterSpacing: "1px",
+              textTransform: "uppercase",
+            }}
+          >
+            Peer Borrowing Agreement
           </div>
-          <h2 className="font-serif" style={{ fontSize: "1.6rem", color: "var(--receipt-text)" }}>
+          <h1 className="font-serif" style={{ fontSize: "2rem", color: "#111111", margin: "4px 0" }}>
             Campus Circular Trust Contract
-          </h2>
-          <div className="font-mono" style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", marginTop: "4px" }}>
-            SERIAL NO: {serialNo} • DATE: {formatDate(new Date().toISOString())}
+          </h1>
+          <div className="font-mono" style={{ fontSize: "0.8rem", color: "#666666", marginTop: "6px" }}>
+            CONTRACT NO: <strong>{serialNo}</strong> • CREATED: {formatDate(new Date().toISOString())}
           </div>
         </div>
 
@@ -134,39 +158,40 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
             display: "grid",
             gridTemplateColumns: "1fr 1fr",
             gap: "16px",
-            background: "rgba(0,0,0,0.03)",
-            padding: "16px",
-            borderRadius: "var(--radius-sm)",
-            marginBottom: "20px",
+            background: "#f9f9f9",
+            border: "1px solid #eeeeee",
+            padding: "18px",
+            borderRadius: "10px",
+            marginBottom: "24px",
           }}
         >
           {/* Lender */}
           <div>
-            <div className="font-mono" style={{ fontSize: "0.7rem", color: "var(--receipt-dim)", textTransform: "uppercase" }}>
+            <div className="font-mono" style={{ fontSize: "0.72rem", color: "#888888", textTransform: "uppercase", letterSpacing: "0.5px" }}>
               LENDER (OWNER)
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "6px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
               <TrustBadge score={owner.trustScore} size="sm" showVerified={owner.verified} />
               <div>
-                <strong style={{ fontSize: "0.95rem" }}>{owner.name}</strong>
-                <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>
-                  {owner.dept} ({owner.room})
+                <strong style={{ fontSize: "0.95rem", color: "#111111", display: "block" }}>{owner.name}</strong>
+                <div style={{ fontSize: "0.78rem", color: "#666666" }}>
+                  {owner.dept} • {owner.room}
                 </div>
               </div>
             </div>
           </div>
 
           {/* Borrower */}
-          <div style={{ borderLeft: "1px dashed var(--receipt-dim)", paddingLeft: "16px" }}>
-            <div className="font-mono" style={{ fontSize: "0.7rem", color: "var(--receipt-dim)", textTransform: "uppercase" }}>
+          <div style={{ borderLeft: "1px dashed #dddddd", paddingLeft: "16px" }}>
+            <div className="font-mono" style={{ fontSize: "0.72rem", color: "#888888", textTransform: "uppercase", letterSpacing: "0.5px" }}>
               BORROWER (YOU)
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginTop: "6px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "8px" }}>
               <TrustBadge score={borrower.trustScore} size="sm" showVerified={borrower.verified} />
               <div>
-                <strong style={{ fontSize: "0.95rem" }}>{borrower.name}</strong>
-                <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }}>
-                  {borrower.dept} ({borrower.room})
+                <strong style={{ fontSize: "0.95rem", color: "#111111", display: "block" }}>{borrower.name}</strong>
+                <div style={{ fontSize: "0.78rem", color: "#666666" }}>
+                  {borrower.dept} • {borrower.room}
                 </div>
               </div>
             </div>
@@ -174,12 +199,23 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
         </div>
 
         {/* Resource Item Row */}
-        <div style={{ marginBottom: "20px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <div
+          style={{
+            marginBottom: "20px",
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            padding: "16px 20px",
+            background: "#ffffff",
+            border: "1px solid #e8e8e8",
+            borderRadius: "10px",
+          }}
+        >
           <div>
-            <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }} className="font-mono">
+            <div style={{ fontSize: "0.72rem", color: "#888888", letterSpacing: "0.5px" }} className="font-mono">
               IDENTIFIED RESOURCE
             </div>
-            <div style={{ fontSize: "1.1rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", marginTop: "2px" }}>
+            <div style={{ fontSize: "1.1rem", fontWeight: 700, display: "flex", alignItems: "center", gap: "10px", marginTop: "4px", color: "#111111" }}>
               <CategoryIcon category={resource.category} size={20} />
               <span>{resource.name}</span>
             </div>
@@ -187,7 +223,7 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
 
           {/* Duration Selector */}
           <div>
-            <label style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", display: "block" }} className="font-mono">
+            <label style={{ fontSize: "0.72rem", color: "#888888", display: "block", marginBottom: "4px", letterSpacing: "0.5px" }} className="font-mono">
               DURATION (DAYS)
             </label>
             <select
@@ -195,14 +231,17 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
               onChange={(e) => setDays(Number(e.target.value))}
               className="font-mono"
               style={{
-                background: "#fff",
-                border: "1px solid var(--receipt-dim)",
-                borderRadius: "var(--radius-sm)",
-                padding: "4px 8px",
-                fontWeight: "bold",
+                background: "#f8f8f8",
+                border: "1px solid #cccccc",
+                borderRadius: "6px",
+                padding: "6px 12px",
+                fontWeight: 700,
+                color: "#111111",
+                fontSize: "0.9rem",
+                cursor: "pointer",
               }}
             >
-              {[1, 2, 3, 4, 5].map((d) => (
+              {[1, 2, 3, 4, 5, 7, 14].map((d) => (
                 <option key={d} value={d}>
                   {d} {d === 1 ? "day" : "days"}
                 </option>
@@ -215,33 +254,33 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
         <FeeBreakdown dailyRate={resource.dailyRate} days={days} deposit={resource.deposit} />
 
         {/* Responsibilities Checkboxes */}
-        <div style={{ margin: "24px 0", display: "flex", flexDirection: "column", gap: "12px", fontSize: "0.85rem" }}>
-          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+        <div style={{ margin: "24px 0", display: "flex", flexDirection: "column", gap: "12px", fontSize: "0.88rem" }}>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", color: "#333333" }}>
             <input
               type="checkbox"
               checked={checked1}
               onChange={(e) => setChecked1(e.target.checked)}
-              style={{ accentColor: "var(--trust-green)", width: "18px", height: "18px" }}
+              style={{ accentColor: "#000000", width: "18px", height: "18px", marginTop: "2px", flexShrink: 0 }}
             />
             <span>I agree to return the item on or before the agreed return deadline.</span>
           </label>
 
-          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", color: "#333333" }}>
             <input
               type="checkbox"
               checked={checked2}
               onChange={(e) => setChecked2(e.target.checked)}
-              style={{ accentColor: "var(--trust-green)", width: "18px", height: "18px" }}
+              style={{ accentColor: "#000000", width: "18px", height: "18px", marginTop: "2px", flexShrink: 0 }}
             />
             <span>I accept responsibility for inspection upon handover and reporting any pre-existing damage.</span>
           </label>
 
-          <label style={{ display: "flex", alignItems: "center", gap: "10px", cursor: "pointer" }}>
+          <label style={{ display: "flex", alignItems: "flex-start", gap: "12px", cursor: "pointer", color: "#333333" }}>
             <input
               type="checkbox"
               checked={checked3}
               onChange={(e) => setChecked3(e.target.checked)}
-              style={{ accentColor: "var(--trust-green)", width: "18px", height: "18px" }}
+              style={{ accentColor: "#000000", width: "18px", height: "18px", marginTop: "2px", flexShrink: 0 }}
             />
             <span>I acknowledge the security deposit terms and potential late return fee deductions.</span>
           </label>
@@ -249,17 +288,22 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
 
         {/* Confirm Button */}
         <button
-          className="btn-primary"
+          type="button"
           disabled={!isFormValid || isConfirmed}
           onClick={handleConfirmClick}
           style={{
             width: "100%",
             padding: "16px",
-            fontSize: "1.1rem",
-            background: isFormValid ? "var(--ink-navy)" : "var(--receipt-dim)",
-            color: "var(--receipt)",
-            opacity: isFormValid ? 1 : 0.6,
-            animation: isConfirmed ? "pressStamp 0.4s ease" : "none",
+            fontSize: "1rem",
+            fontWeight: 700,
+            letterSpacing: "0.5px",
+            background: isFormValid ? "#111111" : "#e0e0e0",
+            color: isFormValid ? "#ffffff" : "#888888",
+            border: isFormValid ? "1px solid #111111" : "1px solid #e0e0e0",
+            borderRadius: "10px",
+            cursor: isFormValid ? "pointer" : "not-allowed",
+            transition: "all 0.2s ease",
+            boxShadow: isFormValid ? "0 4px 14px rgba(0, 0, 0, 0.15)" : "none",
           }}
         >
           {isConfirmed ? "SEALED & PROCESSED ✓" : "CONFIRM & SEAL AGREEMENT →"}

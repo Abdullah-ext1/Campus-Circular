@@ -7,45 +7,46 @@ export default function FeeBreakdown({ dailyRate, days = 3, deposit = 0 }) {
   return (
     <div
       style={{
-        background: "rgba(0, 0, 0, 0.04)",
-        border: "1px dashed var(--receipt-dim)",
-        borderRadius: "var(--radius-sm)",
-        padding: "16px",
-        margin: "16px 0",
+        background: "#f9f9f9",
+        border: "1px dashed #cccccc",
+        borderRadius: "8px",
+        padding: "16px 20px",
+        margin: "18px 0",
         fontFamily: "var(--font-mono)",
         fontSize: "0.85rem",
       }}
     >
-      <div style={{ textTransform: "uppercase", letterSpacing: "1px", fontWeight: "bold", marginBottom: "12px", borderBottom: "1px dashed var(--receipt-dim)", paddingBottom: "4px" }}>
-        Financial Breakdown
+      <div style={{ textTransform: "uppercase", letterSpacing: "1px", fontWeight: 700, marginBottom: "12px", borderBottom: "1px dashed #dddddd", paddingBottom: "6px", color: "#111111" }}>
+        Financial Calculation Summary
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px" }}>
-        <span>Borrowing Charge ({days} days)</span>
-        <span>{formatCurrency(borrowingCharge)}</span>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", color: "#333333" }}>
+        <span>Borrowing Fee ({days} {days === 1 ? "day" : "days"})</span>
+        <span style={{ fontWeight: 600 }}>{formatCurrency(borrowingCharge)}</span>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", color: "var(--receipt-dim)" }}>
-        <span>Platform Maintenance (5%)</span>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "6px", color: "#666666" }}>
+        <span>Platform Protocol (5%)</span>
         <span>{formatCurrency(platformFee)}</span>
       </div>
 
-      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", color: "var(--stamp-red)" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "12px", color: "#111111" }}>
         <span>Security Deposit (Refundable)</span>
-        <span>{formatCurrency(deposit)}</span>
+        <span style={{ fontWeight: 600 }}>{formatCurrency(deposit)}</span>
       </div>
 
       <div
         style={{
           display: "flex",
           justifyContent: "space-between",
-          fontWeight: "bold",
+          fontWeight: 800,
           fontSize: "1.05rem",
-          borderTop: "2px solid var(--receipt-text)",
-          borderBottom: "2px double var(--receipt-text)",
-          paddingTop: "6px",
-          paddingBottom: "4px",
-          marginTop: "8px",
+          borderTop: "2px solid #111111",
+          borderBottom: "2px double #111111",
+          paddingTop: "8px",
+          paddingBottom: "6px",
+          marginTop: "10px",
+          color: "#111111",
         }}
       >
         <span>TOTAL DUE AT HANDOVER</span>

@@ -1,9 +1,42 @@
-import React from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { BarChart3, Settings, Plus, Compass } from "lucide-react";
+import { Settings, Plus, Compass, Send, Clock, User, ChevronDown, LogOut } from "lucide-react";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
-export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggleAdmin, onOpenProfile, onCreateListing }) {
+export default function Header({ currentUser, isAdmin, onToggleAdmin, onNavigateTab, onCreateListing }) {
   const navigate = useNavigate();
+  const { logout } = useAuth();
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClickOutside(e) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+        setDropdownOpen(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  const handleSelectTab = (tabId) => {
+    setDropdownOpen(false);
+    if (onNavigateTab) {
+      onNavigateTab(tabId);
+    } else {
+      navigate("/app", { state: { targetTab: tabId } });
+    }
+  };
+
+  const handleLogout = () => {
+    setDropdownOpen(false);
+    logout();
+    navigate("/auth");
+  };
+
+  const firstName = currentUser?.name?.split(" ")[0] || "User";
+  const userInitials = currentUser?.initials || currentUser?.name?.[0] || "U";
 
   return (
     <header className="app-header" role="banner">
@@ -35,16 +68,6 @@ export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggle
 
         <button
           className="btn-secondary"
-          onClick={onOpenDashboard}
-          style={{ padding: "6px 12px", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
-          aria-label="View Campus Impact stats"
-        >
-          <BarChart3 size={15} />
-          <span>Impact</span>
-        </button>
-
-        <button
-          className="btn-secondary"
           onClick={onToggleAdmin}
           style={{ padding: "6px 10px", fontSize: "0.8rem", opacity: isAdmin ? 1 : 0.6, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
           title="Toggle Admin Mode"
@@ -53,20 +76,144 @@ export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggle
           <Settings size={15} />
         </button>
 
-        <div
-          className="user-pill"
-          onClick={onOpenProfile}
-          role="button"
-          tabIndex={0}
-          aria-label={`View ${currentUser?.name}'s profile`}
-        >
-          <div className="avatar-circle">{currentUser?.initials || currentUser?.name?.[0] || "U"}</div>
-          <span className="font-sans" style={{ fontSize: "0.85rem", fontWeight: 600 }}>
-            {currentUser?.name?.split(" ")[0]}
-          </span>
-          <span className="font-mono" style={{ fontSize: "0.75rem", fontWeight: 700, color: "#111111" }}>
-            {currentUser?.trustScore || 90}%
-          </span>
+        {/* User Pill with Dropdown */}
+        <div className="user-dropdown-container" ref={dropdownRef} style={{ position: "relative" }}>
+          <div
+            className="user-pill"
+            onClick={() => setDropdownOpen(!dropdownOpen)}
+            role="button"
+            tabIndex={0}
+            aria-haspopup="menu"
+            aria-expanded={dropdownOpen}
+            aria-label={`User menu for ${currentUser?.name}`}
+            style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer", userSelect: "none" }}
+          >
+            <div className="avatar-circle">{userInitials}</div>
+            <span className="font-sans" style={{ fontSize: "0.85rem", fontWeight: 600, color: "#111111" }}>
+              {firstName}
+            </span>
+            <ChevronDown size={14} style={{ color: "#666666", transition: "transform 0.2s ease", transform: dropdownOpen ? "rotate(180deg)" : "rotate(0deg)" }} />
+          </div>
+
+          {/* Dropdown Menu */}
+          {dropdownOpen && (
+            <div
+              className="user-dropdown-menu animate-slide-up"
+              role="menu"
+              style={{
+                position: "absolute",
+                top: "calc(100% + 8px)",
+                right: 0,
+                width: "220px",
+                background: "#ffffff",
+                border: "1px solid #e5e5e5",
+                borderRadius: "10px",
+                boxShadow: "0 8px 24px rgba(0,0,0,0.12)",
+                padding: "8px",
+                zIndex: 200,
+                display: "flex",
+                flexDirection: "column",
+                gap: "2px",
+              }}
+            >
+              {/* Header Info */}
+              <div style={{ padding: "8px 10px 10px", borderBottom: "1px solid #f0f0f0", marginBottom: "4px" }}>
+                <div style={{ fontWeight: 700, fontSize: "0.88rem", color: "#111111" }}>{currentUser?.name}</div>
+                <div style={{ fontSize: "0.75rem", color: "#666666", marginTop: "2px" }}>{currentUser?.dept || "Campus Member"}</div>
+              </div>
+
+              {/* Navigation Options */}
+              <button
+                type="button"
+                className="dropdown-item-btn"
+                role="menuitem"
+                onClick={() => handleSelectTab("home")}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  color: "#111111",
+                  textAlign: "left",
+                  width: "100%",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <Send size={15} style={{ color: "#444444" }} />
+                <span>Dispatch / AI Finder</span>
+              </button>
+
+              <button
+                type="button"
+                className="dropdown-item-btn"
+                role="menuitem"
+                onClick={() => handleSelectTab("activity")}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  color: "#111111",
+                  textAlign: "left",
+                  width: "100%",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <Clock size={15} style={{ color: "#444444" }} />
+                <span>Activity & Loans</span>
+              </button>
+
+              <button
+                type="button"
+                className="dropdown-item-btn"
+                role="menuitem"
+                onClick={() => handleSelectTab("profile")}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  color: "#111111",
+                  textAlign: "left",
+                  width: "100%",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <User size={15} style={{ color: "#444444" }} />
+                <span>My Profile</span>
+              </button>
+
+              <div style={{ height: "1px", background: "#f0f0f0", margin: "4px 0" }} />
+
+              <button
+                type="button"
+                className="dropdown-item-btn"
+                role="menuitem"
+                onClick={handleLogout}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "10px",
+                  padding: "8px 10px",
+                  borderRadius: "6px",
+                  fontSize: "0.85rem",
+                  color: "#d9383a",
+                  textAlign: "left",
+                  width: "100%",
+                  transition: "background 0.15s ease",
+                }}
+              >
+                <LogOut size={15} />
+                <span>Switch Account / Sign Out</span>
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </header>

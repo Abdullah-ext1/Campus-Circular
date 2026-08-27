@@ -1,13 +1,11 @@
 import React from "react";
-import { Send, Grid, PlusCircle, Clock, ShieldCheck, ShieldAlert } from "lucide-react";
+import { Send, Clock, ShieldCheck } from "lucide-react";
 
 export default function TabBar({ activeTab, setActiveTab }) {
   const tabs = [
     { id: "home", label: "Dispatch", Icon: Send },
-    { id: "browse", label: "Inventory", Icon: Grid },
     { id: "activity", label: "Activity", Icon: Clock },
     { id: "profile", label: "Profile", Icon: ShieldCheck },
-    { id: "admin", label: "Governance", Icon: ShieldAlert },
   ];
 
   return (
