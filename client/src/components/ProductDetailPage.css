@@ -193,8 +193,9 @@
 }
 
 .tag-pill {
-  background-color: #8c826b;
-  color: #ffffff;
+  background-color: #f0f0f0;
+  color: #111111;
+  border: 1px solid #e0e0e0;
   font-size: 0.75rem;
   font-weight: 600;
   padding: 6px 14px;
@@ -203,7 +204,7 @@
 }
 
 .tag-pill:nth-child(even) {
-  background-color: #736d5e;
+  background-color: #f7f7f7;
 }
 
 /* Description */

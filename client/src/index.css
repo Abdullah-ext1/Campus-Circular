@@ -1,24 +1,24 @@
 /* ============================================
-   CAMPUS CIRCULAR — Design System ("Analog Trust")
+   CAMPUS CIRCULAR — Unified Design System (Minimalist B&W)
    ============================================ */
 
 :root {
-  /* Palette: "The Ledger" */
-  --ink-navy: #1b2141;
-  --carbon: #2a2d3e;
-  --carbon-light: #34384e;
-  --slate: #3d4155;
-  --slate-light: #525770;
-  --stamp-red: #c94040;
-  --stamp-red-bg: rgba(201, 64, 64, 0.15);
-  --trust-green: #3b8a5a;
-  --trust-green-bg: rgba(59, 138, 90, 0.15);
-  --ledger-gold: #c9a84c;
-  --ledger-gold-bg: rgba(201, 168, 76, 0.15);
-  --receipt: #ede8d5;
-  --receipt-dark: #ded7bf;
-  --receipt-text: #1b2141;
-  --receipt-dim: #9b978a;
+  /* Palette: Crisp Monochrome with Semantic Accents */
+  --ink-navy: #ffffff;
+  --carbon: #fbfbfb;
+  --carbon-light: #f3f3f3;
+  --slate: #e5e5e5;
+  --slate-light: #d4d4d4;
+  --stamp-red: #d9383a;
+  --stamp-red-bg: rgba(217, 56, 58, 0.08);
+  --trust-green: #257a4a;
+  --trust-green-bg: rgba(37, 122, 74, 0.08);
+  --ledger-gold: #111111;
+  --ledger-gold-bg: rgba(0, 0, 0, 0.06);
+  --receipt: #111111;
+  --receipt-dark: #000000;
+  --receipt-text: #111111;
+  --receipt-dim: #666666;
 
   /* Typography */
   --font-serif: "DM Serif Display", serif;
@@ -26,15 +26,15 @@
   --font-mono: "JetBrains Mono", monospace;
 
   /* Elevation & Shadows */
-  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.25);
-  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.35);
-  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
-  --paper-shadow: 0 10px 30px rgba(0, 0, 0, 0.4), 0 2px 4px rgba(0, 0, 0, 0.2);
+  --shadow-sm: 0 2px 6px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 6px 18px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+  --paper-shadow: 0 10px 30px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
 
   /* Spacing & Borders */
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 16px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 18px;
   --radius-full: 9999px;
   
   --border-slate: 1px solid var(--slate);
@@ -83,13 +83,38 @@ a {
   text-decoration: none;
 }
 
+/* Accessibility: Skip Links & Focus Ring */
+.skip-to-content {
+  position: absolute;
+  top: -60px;
+  left: 20px;
+  background: #000000;
+  color: #ffffff;
+  padding: 10px 18px;
+  border-radius: 6px;
+  z-index: 9999;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: top 0.2s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.skip-to-content:focus {
+  top: 16px;
+}
+
+:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: var(--ink-navy);
+  background: #ffffff;
 }
 ::-webkit-scrollbar-thumb {
   background: var(--slate);
@@ -124,12 +149,11 @@ h3 { font-size: 1.25rem; }
 .stamp {
   display: inline-block;
   padding: 4px 12px;
-  border: 2px double currentColor;
+  border: 1.5px solid currentColor;
   border-radius: var(--radius-sm);
   font-family: var(--font-serif);
   text-transform: uppercase;
-  letter-spacing: 1.5px;
-  transform: rotate(-2deg);
+  letter-spacing: 1px;
   user-select: none;
 }
 
@@ -144,33 +168,19 @@ h3 { font-size: 1.25rem; }
 }
 
 .stamp-gold {
-  color: var(--ledger-gold);
-  background: var(--ledger-gold-bg);
+  color: #111111;
+  background: #f0f0f0;
 }
 
-/* Paper / Receipt Card */
+/* Paper / Card Container */
 .paper-card {
-  background: var(--receipt);
+  background: #ffffff;
   color: var(--receipt-text);
   border-radius: var(--radius-md);
-  box-shadow: var(--paper-shadow);
+  border: 1px solid var(--slate);
+  box-shadow: var(--shadow-sm);
   position: relative;
   overflow: hidden;
-}
-
-.perforated-edge {
-  position: relative;
-}
-.perforated-edge::after {
-  content: "";
-  position: absolute;
-  bottom: -1px;
-  left: 0;
-  right: 0;
-  height: 6px;
-  background-image: radial-gradient(circle, var(--ink-navy) 3px, transparent 3.5px);
-  background-size: 12px 12px;
-  background-repeat: repeat-x;
 }
 
 /* App Shell Layout */
@@ -178,9 +188,9 @@ h3 { font-size: 1.25rem; }
   min-height: 100vh;
   display: flex;
   flex-direction: column;
-  max-width: 1200px;
+  max-width: 1280px;
   margin: 0 auto;
-  padding-bottom: 72px; /* space for mobile nav */
+  padding-bottom: 72px;
 }
 
 @media (min-width: 768px) {
@@ -191,14 +201,14 @@ h3 { font-size: 1.25rem; }
 
 /* Header */
 .app-header {
-  height: 64px;
+  height: 68px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 16px;
+  padding: 0 24px;
   border-bottom: var(--border-slate);
-  background: rgba(27, 33, 65, 0.9);
-  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
   position: sticky;
   top: 0;
   z-index: 50;
@@ -207,24 +217,26 @@ h3 { font-size: 1.25rem; }
 .brand-stamp {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
 }
 
 .brand-logo {
-  font-family: var(--font-serif);
-  font-size: 1.25rem;
-  color: var(--receipt);
-  letter-spacing: 1px;
+  font-family: var(--font-sans);
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  color: #000000;
 }
 
 .badge-tag {
-  background: var(--carbon);
+  background: #f4f4f4;
   border: 1px solid var(--slate);
-  padding: 2px 8px;
+  padding: 3px 8px;
   border-radius: var(--radius-sm);
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   font-family: var(--font-mono);
-  color: var(--ledger-gold);
+  color: #555555;
+  font-weight: 600;
 }
 
 .header-actions {
@@ -237,8 +249,8 @@ h3 { font-size: 1.25rem; }
   display: flex;
   align-items: center;
   gap: 8px;
-  background: var(--carbon);
-  padding: 4px 12px 4px 4px;
+  background: #f8f8f8;
+  padding: 5px 12px 5px 6px;
   border-radius: var(--radius-full);
   border: var(--border-slate);
   cursor: pointer;
@@ -246,20 +258,20 @@ h3 { font-size: 1.25rem; }
 }
 
 .user-pill:hover {
-  border-color: var(--ledger-gold);
+  border-color: #111111;
 }
 
 .avatar-circle {
-  width: 32px;
-  height: 32px;
+  width: 30px;
+  height: 30px;
   border-radius: 50%;
-  background: var(--slate);
-  color: var(--ledger-gold);
+  background: #111111;
+  color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   font-weight: 600;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
 }
 
 /* TabBar Navigation */
@@ -269,7 +281,7 @@ h3 { font-size: 1.25rem; }
   left: 0;
   right: 0;
   height: 64px;
-  background: var(--carbon);
+  background: #ffffff;
   border-top: var(--border-slate);
   display: flex;
   align-items: center;
@@ -280,13 +292,13 @@ h3 { font-size: 1.25rem; }
 @media (min-width: 768px) {
   .app-tabbar {
     position: static;
-    height: 48px;
+    height: 52px;
     background: transparent;
     border-top: none;
     border-bottom: var(--border-slate);
     justify-content: flex-start;
-    padding: 0 16px;
-    gap: 24px;
+    padding: 0 24px;
+    gap: 28px;
   }
 }
 
@@ -295,8 +307,9 @@ h3 { font-size: 1.25rem; }
   flex-direction: column;
   align-items: center;
   gap: 4px;
-  color: var(--receipt-dim);
-  font-size: 0.75rem;
+  color: #666666;
+  font-size: 0.78rem;
+  font-weight: 500;
   padding: 6px 12px;
   border-radius: var(--radius-sm);
   transition: all 0.2s ease;
@@ -308,12 +321,13 @@ h3 { font-size: 1.25rem; }
     flex-direction: row;
     font-size: 0.9rem;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 8px 14px;
   }
 }
 
 .tab-item.active {
-  color: var(--ledger-gold);
+  color: #000000;
+  font-weight: 700;
 }
 
 .tab-item.active::after {
@@ -323,7 +337,7 @@ h3 { font-size: 1.25rem; }
   left: 12px;
   right: 12px;
   height: 2px;
-  background: var(--ledger-gold);
+  background: #000000;
 }
 
 @media (min-width: 768px) {
@@ -334,48 +348,11 @@ h3 { font-size: 1.25rem; }
   }
 }
 
-.tab-icon {
-  font-size: 1.1rem;
-}
-
 /* Keyframe Animations */
-@keyframes stampIn {
-  0% {
-    transform: scale(3) rotate(-15deg);
-    opacity: 0;
-  }
-  70% {
-    transform: scale(0.9) rotate(2deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(-2deg);
-    opacity: 1;
-  }
-}
-
-@keyframes pulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(201, 168, 76, 0.4);
-  }
-  50% {
-    box-shadow: 0 0 0 12px rgba(201, 168, 76, 0);
-  }
-}
-
-@keyframes riskPulse {
-  0%, 100% {
-    box-shadow: 0 0 0 0 rgba(201, 64, 64, 0.6);
-  }
-  50% {
-    box-shadow: 0 0 0 16px rgba(201, 64, 64, 0);
-  }
-}
-
 @keyframes slideUp {
   from {
     opacity: 0;
-    transform: translateY(20px);
+    transform: translateY(16px);
   }
   to {
     opacity: 1;
@@ -388,18 +365,6 @@ h3 { font-size: 1.25rem; }
   to { opacity: 1; }
 }
 
-@keyframes drawLine {
-  from { stroke-dashoffset: 1000; }
-  to { stroke-dashoffset: 0; }
-}
-
-@keyframes pressStamp {
-  0% { transform: scale(1); }
-  30% { transform: scale(0.92); }
-  60% { transform: scale(1.05); }
-  100% { transform: scale(1); }
-}
-
 .animate-slide-up {
   animation: slideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
@@ -408,10 +373,20 @@ h3 { font-size: 1.25rem; }
   animation: fadeIn 0.25s ease-in forwards;
 }
 
-/* Button & Badge Utility Classes */
+/* Reduced Motion for Accessibility */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* Button & Utility Classes */
 .btn-primary {
-  background: var(--trust-green);
-  color: #fff;
+  background: #111111;
+  color: #ffffff;
   padding: 12px 24px;
   border-radius: var(--radius-md);
   font-weight: 600;
@@ -424,14 +399,13 @@ h3 { font-size: 1.25rem; }
 }
 
 .btn-primary:hover {
-  background: #2d6d45;
+  background: #333333;
   transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: var(--carbon);
-  color: var(--receipt);
+  background: #f8f8f8;
+  color: #111111;
   border: var(--border-slate);
   padding: 10px 20px;
   border-radius: var(--radius-md);
@@ -443,13 +417,13 @@ h3 { font-size: 1.25rem; }
 }
 
 .btn-secondary:hover {
-  background: var(--carbon-light);
-  border-color: var(--ledger-gold);
+  background: #eeeeee;
+  border-color: #111111;
 }
 
 .btn-outline-gold {
-  border: var(--border-gold);
-  color: var(--ledger-gold);
+  border: 1px solid #111111;
+  color: #111111;
   padding: 8px 16px;
   border-radius: var(--radius-md);
   font-weight: 500;
@@ -457,10 +431,10 @@ h3 { font-size: 1.25rem; }
 }
 
 .btn-outline-gold:hover {
-  background: var(--ledger-gold-bg);
+  background: #111111;
+  color: #ffffff;
 }
 
-/* Responsive Grid & Containers */
 .container-padded {
   padding: 16px;
 }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useParams } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import LandingPage from "./components/LandingPage.jsx";
 import ExplorePage from "./components/ExplorePage.jsx";
@@ -25,6 +25,7 @@ import ProductDetailPage from "./components/ProductDetailPage.jsx";
 import PublicProfile from "./components/PublicProfile.jsx";
 import NeedFinder from "./components/NeedFinder.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
+import SkipLink from "./components/SkipLink.jsx";
 
 import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
@@ -35,12 +36,14 @@ import { parseIntentWithGroq } from "./utils/groqApi.js";
 
 export const AppContext = createContext();
 
-function CampusAppShell() {
+function CampusAppShell({ defaultSubScreen = null }) {
   const { user } = useAuth();
+  const location = useLocation();
+  const params = useParams();
 
   // Navigation & View State
   const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
-  const [currentSubScreen, setCurrentSubScreen] = useState(null);
+  const [currentSubScreen, setCurrentSubScreen] = useState(defaultSubScreen);
   const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(user?.role === "admin");
   const [isParsingIntent, setIsParsingIntent] = useState(false);
@@ -48,18 +51,35 @@ function CampusAppShell() {
   // Active User
   const [currentUser, setCurrentUser] = useState(user || students[7]);
 
+  // Selected Resources & Flow State
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedKit, setSelectedKit] = useState(null);
+  const [selectedResource, setSelectedResource] = useState(null);
+  const [activeBorrowing, setActiveBorrowing] = useState(sampleBorrowings[0]);
+
+  // Handle URL deep-linking or navigation state
+  useEffect(() => {
+    const targetResourceId = params.resourceId || location.state?.resourceId;
+    const targetSubScreen = defaultSubScreen || location.state?.subScreen;
+
+    if (targetResourceId) {
+      const res = getResource(parseInt(targetResourceId, 10));
+      if (res) {
+        setSelectedResource(res);
+        setCurrentSubScreen("agreement");
+        setActiveTab("home");
+      }
+    } else if (targetSubScreen) {
+      setCurrentSubScreen(targetSubScreen);
+    }
+  }, [params.resourceId, location.state, defaultSubScreen]);
+
   useEffect(() => {
     if (user) {
       setCurrentUser(user);
       setIsAdmin(user.role === "admin");
     }
   }, [user]);
-
-  // Selected Resources & Flow State
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedKit, setSelectedKit] = useState(null);
-  const [selectedResource, setSelectedResource] = useState(null);
-  const [activeBorrowing, setActiveBorrowing] = useState(sampleBorrowings[0]);
 
   // Persistent Catalog Resources list
   const [catalogResources, setCatalogResources] = useState(() => {
@@ -70,14 +90,6 @@ function CampusAppShell() {
   useEffect(() => {
     localStorage.setItem("cc_resources", JSON.stringify(catalogResources));
   }, [catalogResources]);
-
-  const handleAddResource = (newRes) => {
-    setCatalogResources((prev) => [newRes, ...prev]);
-  };
-
-  const handleDeleteResource = (resId) => {
-    setCatalogResources((prev) => prev.filter((r) => r.id !== resId));
-  };
 
   // Persistent Borrowings list
   const [borrowings, setBorrowings] = useState(() => {
@@ -154,6 +166,8 @@ function CampusAppShell() {
       }}
     >
       <div className="app-container">
+        <SkipLink targetId="app-main-content" label="Skip to application main content" />
+
         <Header
           currentUser={currentUser}
           onOpenDashboard={() => setShowDashboard(true)}
@@ -168,7 +182,7 @@ function CampusAppShell() {
           }}
         />
 
-        <main className="app-main container-padded" style={{ flex: 1 }}>
+        <main id="app-main-content" className="app-main container-padded" style={{ flex: 1 }} role="main">
           {currentSubScreen === "createListing" ? (
             <CreateListing
               onBack={() => setCurrentSubScreen(null)}
@@ -203,7 +217,7 @@ function CampusAppShell() {
                     <BorrowingAgreement
                       resource={selectedResource}
                       borrower={currentUser}
-                      onBack={() => setCurrentSubScreen("detail")}
+                      onBack={() => setCurrentSubScreen(selectedKit ? "kit" : null)}
                       onConfirm={handleConfirmAgreement}
                     />
                   )}
@@ -233,7 +247,7 @@ function CampusAppShell() {
                     <BorrowingAgreement
                       resource={selectedResource}
                       borrower={currentUser}
-                      onBack={() => setCurrentSubScreen("detail")}
+                      onBack={() => setCurrentSubScreen(null)}
                       onConfirm={handleConfirmAgreement}
                     />
                   )}
@@ -262,31 +276,35 @@ function CampusAppShell() {
                               className="paper-card"
                               onClick={() => handleOpenTracker(b)}
                               style={{
-                                background: "var(--carbon)",
+                                background: "#ffffff",
                                 border: b.isLate ? "1px solid var(--stamp-red)" : "1px solid var(--slate)",
                                 padding: "20px",
                                 cursor: "pointer",
                                 display: "flex",
                                 alignItems: "center",
                                 justifyContent: "space-between",
+                                transition: "all 0.2s ease",
                               }}
+                              role="button"
+                              tabIndex={0}
+                              aria-label={`View borrowing agreement ${b.id} for ${res?.name}`}
                             >
                               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
                                 <div
                                   style={{
-                                    padding: "8px",
-                                    background: "rgba(0,0,0,0.25)",
+                                    padding: "10px",
+                                    background: "#f4f4f4",
                                     borderRadius: "var(--radius-md)",
-                                    color: "var(--ledger-gold)",
+                                    color: "#111111",
                                   }}
                                 >
                                   <CategoryIcon category={res?.category} size={24} />
                                 </div>
                                 <div>
-                                  <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)" }}>
+                                  <div className="font-mono" style={{ fontSize: "0.75rem", color: "#666666", fontWeight: 600 }}>
                                     {b.id}
                                   </div>
-                                  <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)" }}>
+                                  <h3 className="font-sans" style={{ fontSize: "1.1rem", fontWeight: 700, color: "var(--receipt)" }}>
                                     {res?.name}
                                   </h3>
                                   <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
@@ -390,6 +408,9 @@ export default function App() {
           <Route path="/profile/:id" element={<PublicProfile />} />
           <Route path="/find" element={<NeedFinder />} />
           <Route path="/auth" element={<AuthPage />} />
+          <Route path="/create" element={<CampusAppShell defaultSubScreen="createListing" />} />
+          <Route path="/app/borrow/:resourceId" element={<CampusAppShell />} />
+          <Route path="/app/track/:borrowingId" element={<CampusAppShell />} />
           <Route path="/app/*" element={<CampusAppShell />} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>

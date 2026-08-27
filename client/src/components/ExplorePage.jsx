@@ -190,18 +190,27 @@ export default function ExplorePage() {
 
         {/* Topbar Right Controls */}
         <div className="explore-topbar-right">
-          {/* Language Selector */}
-          <div className="explore-lang-picker">
-            <span className={lang === "EN" ? "active" : ""} onClick={() => setLang("EN")}>
-              EN
-            </span>
-            <span className={lang === "HI" ? "active" : ""} onClick={() => setLang("HI")}>
-              हिंदी
-            </span>
-            <span className={lang === "MR" ? "active" : ""} onClick={() => setLang("MR")}>
-              मराठी
-            </span>
-          </div>
+          {/* Need Finder Shortcut */}
+          <button
+            className="explore-needfinder-btn"
+            onClick={() => navigate("/find")}
+            aria-label="Open Need Finder canvas"
+            title="Open Interactive Need Finder"
+          >
+            <Sparkles size={14} />
+            <span>Need Finder</span>
+          </button>
+
+          {/* List Gear Button for Lister or Admin */}
+          {(user?.role === "lister" || user?.role === "admin") && (
+            <button
+              className="explore-listgear-btn"
+              onClick={() => navigate("/app", { state: { subScreen: "createListing" } })}
+              aria-label="Post a new gear listing"
+            >
+              <span>+ List Gear</span>
+            </button>
+          )}
 
           {/* User Account / Navigation */}
           {user ? (
@@ -215,17 +224,18 @@ export default function ExplorePage() {
                   className="admin-link-btn"
                   onClick={() => navigate("/admin")}
                   title="Open Admin Console"
+                  aria-label="Open Admin Console"
                 >
-                  {t.nav.admin}
+                  Admin
                 </button>
               )}
-              <button className="logout-btn" onClick={logout} title="Sign Out">
+              <button className="logout-btn" onClick={logout} title="Sign Out" aria-label="Sign Out">
                 <LogOut size={15} />
               </button>
             </div>
           ) : (
-            <button className="explore-signin-btn" onClick={() => navigate("/auth")}>
-              {t.nav.signIn}
+            <button className="explore-signin-btn" onClick={() => navigate("/auth")} aria-label="Sign in">
+              Sign In
             </button>
           )}
         </div>

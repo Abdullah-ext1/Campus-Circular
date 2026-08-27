@@ -153,29 +153,47 @@
 .explore-topbar-right {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
-.explore-lang-picker {
-  display: flex;
+.explore-needfinder-btn {
+  display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  background: #f4f4f4;
+  border: 1px solid #e5e5e5;
+  color: #111111;
+  padding: 8px 14px;
+  border-radius: 999px;
   font-size: 0.82rem;
   font-weight: 600;
-  border-right: 1px solid #e5e5e5;
-  padding-right: 16px;
-}
-
-.explore-lang-picker span {
-  color: #888888;
   cursor: pointer;
-  padding-bottom: 2px;
   transition: all 0.2s ease;
 }
 
-.explore-lang-picker span.active {
-  color: #000000;
-  border-bottom: 2px solid #000000;
+.explore-needfinder-btn:hover {
+  background: #111111;
+  color: #ffffff;
+  border-color: #111111;
+}
+
+.explore-listgear-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #111111;
+  border: 1px solid #111111;
+  color: #ffffff;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.explore-listgear-btn:hover {
+  background: #333333;
 }
 
 .explore-user-badge {

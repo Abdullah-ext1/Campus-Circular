@@ -3,39 +3,67 @@ import { students } from "../data/mockData.js";
 
 const AuthContext = createContext();
 
-// Pre-configured profiles
-export const PRESET_ACCOUNTS = {
-  admin: {
+// Build dynamic user accounts map from students directory
+const createAccountsMap = () => {
+  const map = {};
+
+  // Register all 14 student profiles
+  students.forEach((s) => {
+    const role = s.username === "admin" ? "admin" : (s.lendCount >= 15 ? "lister" : "user");
+    const account = {
+      username: s.username,
+      name: s.name,
+      role: role,
+      dept: s.dept,
+      year: `${s.year}th Year`,
+      avatar: s.avatar,
+      trustScore: s.trustScore,
+      studentId: s.id,
+    };
+
+    map[s.username.toLowerCase()] = account;
+    map[s.name.toLowerCase()] = account;
+    map[s.name.split(" ")[0].toLowerCase()] = account; // first name
+  });
+
+  // Aliases for generic roles
+  map["admin"] = map["admin"] || {
     username: "admin",
-    name: "Admin Controller",
+    name: "Campus Circular Oversight",
     role: "admin",
-    dept: "Campus Circular Oversight",
+    dept: "Governance & Trust Council",
     year: "Staff / Exec",
-    avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80",
+    avatar: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&auto=format&fit=crop&q=80",
     trustScore: 100,
-    studentId: 99,
-  },
-  lister: {
+    studentId: 14,
+  };
+
+  map["lister"] = map["priya"] || map["arjun"] || {
     username: "lister",
-    name: "Siddharth Joshi",
+    name: "Priya Sharma",
     role: "lister",
-    dept: "Computer Science",
-    year: "3rd Year",
-    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
-    trustScore: 95,
-    studentId: 8,
-  },
-  user: {
+    dept: "Journalism & Mass Comm",
+    year: "2nd Year",
+    avatar: "https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=150&auto=format&fit=crop&q=80",
+    trustScore: 91,
+    studentId: 2,
+  };
+
+  map["user"] = map["arjun"] || {
     username: "user",
-    name: "Aarav Sharma",
+    name: "Arjun Mehta",
     role: "user",
     dept: "Film & Media Studies",
-    year: "2nd Year",
-    avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80",
-    trustScore: 88,
+    year: "3rd Year",
+    avatar: "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=150&auto=format&fit=crop&q=80",
+    trustScore: 94,
     studentId: 1,
-  },
+  };
+
+  return map;
 };
+
+export const PRESET_ACCOUNTS = createAccountsMap();
 
 export function AuthProvider({ children }) {
   const [currentUser, setCurrentUserState] = useState(() => {
@@ -47,8 +75,7 @@ export function AuthProvider({ children }) {
         console.error("Failed to parse saved user", e);
       }
     }
-    // Default to lister/student if not logged in
-    return PRESET_ACCOUNTS.lister;
+    return PRESET_ACCOUNTS["arjun"] || PRESET_ACCOUNTS["user"];
   });
 
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
@@ -70,8 +97,7 @@ export function AuthProvider({ children }) {
   const logout = () => {
     setIsAuthenticated(false);
     localStorage.removeItem("cc_auth_user");
-    // Fallback to default user object in state
-    setCurrentUserState(PRESET_ACCOUNTS.user);
+    setCurrentUserState(PRESET_ACCOUNTS["user"]);
   };
 
   const isAdmin = currentUser?.role === "admin";
@@ -86,6 +112,9 @@ export function AuthProvider({ children }) {
         isLister,
         login,
         logout,
+        availableUsers: Object.values(PRESET_ACCOUNTS).filter(
+          (u, index, self) => index === self.findIndex((t) => t.studentId === u.studentId)
+        ),
       }}
     >
       {children}
