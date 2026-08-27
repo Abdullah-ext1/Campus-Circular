@@ -20,6 +20,7 @@ import { getCircularResources } from "../utils/api.js";
 import { recommendResourcesWithGroq } from "../utils/groqService.js";
 import { students } from "../data/mockData.js";
 import CategoryIcon from "./CategoryIcon.jsx";
+import AccessibilityWidget from "./AccessibilityWidget.jsx";
 import "./ExplorePage.css";
 
 const CATEGORIES = [
@@ -190,6 +191,15 @@ export default function ExplorePage() {
 
         {/* Topbar Right Controls */}
         <div className="explore-topbar-right">
+          <button
+            className="explore-listgear-btn"
+            style={{ background: "#f0f0f0", color: "#111", border: "1px solid #ccc" }}
+            onClick={() => navigate("/wanted")}
+            aria-label="View Wanted Hardware Requests Board"
+          >
+            <span>Wanted Board</span>
+          </button>
+
           {/* List Gear Button for Lister or Admin */}
           {(user?.role === "lister" || user?.role === "admin") && (
             <button
@@ -206,18 +216,7 @@ export default function ExplorePage() {
             <div className="explore-user-badge">
               <div className="user-info-text">
                 <span className="user-name">{user.name}</span>
-                <span className="user-role-pill">{user.role?.toUpperCase()}</span>
               </div>
-              {isAdmin && (
-                <button
-                  className="admin-link-btn"
-                  onClick={() => navigate("/admin")}
-                  title="Open Admin Console"
-                  aria-label="Open Admin Console"
-                >
-                  Admin
-                </button>
-              )}
               <button className="logout-btn" onClick={logout} title="Sign Out" aria-label="Sign Out">
                 <LogOut size={15} />
               </button>
@@ -229,6 +228,9 @@ export default function ExplorePage() {
           )}
         </div>
       </header>
+
+      {/* Universal Accessibility Assistant */}
+      <AccessibilityWidget />
 
       {/* ── AI Results Spotlight Banner (When Groq matches) ── */}
       {aiResult && aiResult.hasResults && (

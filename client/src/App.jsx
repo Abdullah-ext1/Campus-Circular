@@ -26,6 +26,9 @@ import SkipLink from "./components/SkipLink.jsx";
 
 import { LanguageProvider } from "./contexts/LanguageContext.jsx";
 import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
+import { AccessibilityProvider } from "./contexts/AccessibilityContext.jsx";
+import WantedBoardPage from "./components/WantedBoardPage.jsx";
+import UPIPaymentPage from "./components/UPIPaymentPage.jsx";
 
 import { students, resources, sampleBorrowings, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
@@ -359,31 +362,37 @@ function CampusAppShell({ defaultSubScreen = null }) {
 
 export default function App() {
   return (
-    <LanguageProvider>
-      <AuthProvider>
-        <Routes>
-          <Route path="/" element={<LandingPage />} />
-          <Route path="/explore" element={<ExplorePage />} />
-          <Route
-            path="/admin"
-            element={
-              <PrivateRoute requiredRole="admin">
-                <AdminPage />
-              </PrivateRoute>
-            }
-          />
-          <Route path="/product/:id" element={<ProductDetailPage />} />
-          <Route path="/profile/:id" element={<PublicProfile />} />
-          <Route path="/find" element={<NeedFinder />} />
-          <Route path="/cart" element={<BundleCartPage />} />
-          <Route path="/auth" element={<AuthPage />} />
-          <Route path="/create" element={<CampusAppShell defaultSubScreen="createListing" />} />
-          <Route path="/app/borrow/:resourceId" element={<CampusAppShell />} />
-          <Route path="/app/track/:borrowingId" element={<CampusAppShell defaultSubScreen="tracker" />} />
-          <Route path="/app/*" element={<CampusAppShell />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </AuthProvider>
-    </LanguageProvider>
+    <AccessibilityProvider>
+      <LanguageProvider>
+        <AuthProvider>
+          <Routes>
+            <Route path="/" element={<LandingPage />} />
+            <Route path="/explore" element={<ExplorePage />} />
+            <Route path="/wanted" element={<WantedBoardPage />} />
+            <Route path="/requests" element={<WantedBoardPage />} />
+            <Route path="/payment" element={<UPIPaymentPage />} />
+            <Route path="/payment/:id" element={<UPIPaymentPage />} />
+            <Route
+              path="/admin"
+              element={
+                <PrivateRoute requiredRole="admin">
+                  <AdminPage />
+                </PrivateRoute>
+              }
+            />
+            <Route path="/product/:id" element={<ProductDetailPage />} />
+            <Route path="/profile/:id" element={<PublicProfile />} />
+            <Route path="/find" element={<NeedFinder />} />
+            <Route path="/cart" element={<BundleCartPage />} />
+            <Route path="/auth" element={<AuthPage />} />
+            <Route path="/create" element={<CampusAppShell defaultSubScreen="createListing" />} />
+            <Route path="/app/borrow/:resourceId" element={<CampusAppShell />} />
+            <Route path="/app/track/:borrowingId" element={<CampusAppShell defaultSubScreen="tracker" />} />
+            <Route path="/app/*" element={<CampusAppShell />} />
+            <Route path="*" element={<Navigate to="/" replace />} />
+          </Routes>
+        </AuthProvider>
+      </LanguageProvider>
+    </AccessibilityProvider>
   );
 }

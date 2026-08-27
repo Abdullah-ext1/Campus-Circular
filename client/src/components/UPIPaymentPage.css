@@ -1,0 +1,475 @@
+/* ============================================
+   CAMPUS CIRCULAR — UPI QR Payment & Escrow Styles
+   ============================================ */
+
+.upi-payment-root {
+  min-height: 100vh;
+  background: #ffffff;
+  color: #111111;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Navbar */
+.upi-navbar {
+  height: 68px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 32px;
+  border-bottom: 1px solid #e5e5e5;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.upi-back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 6px;
+  background: #f4f4f4;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333333;
+}
+
+.upi-back-btn:hover {
+  background: #eeeeee;
+  color: #000000;
+}
+
+.upi-nav-brand {
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.upi-nav-secure {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.75rem;
+  color: #257a4a;
+  background: rgba(37, 122, 74, 0.08);
+  padding: 4px 10px;
+  border-radius: 9999px;
+  font-weight: 700;
+}
+
+/* Stage Layout */
+.upi-main-stage {
+  max-width: 1080px;
+  margin: 32px auto 64px;
+  padding: 0 24px;
+  flex: 1;
+  width: 100%;
+}
+
+.upi-checkout-layout {
+  display: grid;
+  grid-templateColumns: 1fr 1.15fr;
+  gap: 28px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .upi-checkout-layout {
+    grid-templateColumns: 1fr;
+  }
+}
+
+/* Cards */
+.upi-card {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+}
+
+/* Left QR Section */
+.qr-section {
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.qr-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #f4f4f4;
+  border: 1px solid #d4d4d4;
+  padding: 4px 12px;
+  border-radius: 6px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #333333;
+  margin-bottom: 12px;
+}
+
+.qr-title {
+  font-size: 1.8rem;
+  color: #111111;
+  margin-bottom: 4px;
+}
+
+.qr-subtitle {
+  font-size: 0.85rem;
+  color: #666666;
+  max-width: 320px;
+  margin-bottom: 24px;
+}
+
+.qr-frame-wrapper {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.qr-box {
+  background: #ffffff;
+  padding: 16px;
+  border: 2px solid #111111;
+  border-radius: 14px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.qr-center-badge {
+  position: absolute;
+  background: #111111;
+  color: #ffffff;
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+}
+
+.qr-amount-pill {
+  background: #111111;
+  color: #ffffff;
+  padding: 4px 14px;
+  border-radius: 9999px;
+  font-size: 0.85rem;
+  letter-spacing: 0.5px;
+}
+
+/* UPI Copy Row */
+.upi-id-copy-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 8px 14px;
+  width: 100%;
+  max-width: 340px;
+  margin-bottom: 16px;
+}
+
+.upi-id-text {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+}
+
+.upi-id-text .label {
+  color: #888888;
+}
+
+.upi-id-text .val {
+  color: #111111;
+}
+
+.upi-copy-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: #111111;
+  color: #ffffff;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  transition: all 0.15s ease;
+}
+
+.upi-copy-btn.copied {
+  background: #257a4a;
+}
+
+.upi-apps-icons {
+  font-size: 0.72rem;
+  color: #888888;
+  letter-spacing: 1px;
+}
+
+/* Right Form Section */
+.form-section {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.order-summary-box {
+  background: #fbfbfb;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px;
+}
+
+.summary-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.ref-no {
+  font-size: 0.75rem;
+  color: #888888;
+}
+
+.summary-items-title {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111111;
+  margin-bottom: 14px;
+}
+
+.summary-breakdown-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 0.85rem;
+}
+
+.breakdown-row {
+  display: flex;
+  justify-content: space-between;
+  color: #555555;
+}
+
+.total-row {
+  border-top: 1px dashed #cccccc;
+  padding-top: 8px;
+  margin-top: 4px;
+  color: #111111;
+  font-weight: 700;
+  font-size: 1rem;
+}
+
+.total-amt {
+  font-size: 1.25rem;
+  color: #000000;
+}
+
+/* Form Styles */
+.utr-submit-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.verify-title {
+  font-size: 1.4rem;
+  color: #111111;
+}
+
+.verify-desc {
+  font-size: 0.85rem;
+  color: #666666;
+  line-height: 1.4;
+}
+
+.form-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-field-group label {
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: #222222;
+}
+
+.form-field-group input {
+  background: #f8f8f8;
+  border: 1px solid #cccccc;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  color: #111111;
+  transition: all 0.2s ease;
+}
+
+.utr-input {
+  font-size: 1rem !important;
+  letter-spacing: 1px;
+  font-weight: 700;
+}
+
+.form-field-group input:focus {
+  background: #ffffff;
+  border-color: #000000;
+}
+
+.form-field-row {
+  display: flex;
+  gap: 16px;
+}
+
+.trust-note-box {
+  display: flex;
+  gap: 12px;
+  background: rgba(37, 122, 74, 0.05);
+  border: 1px solid rgba(37, 122, 74, 0.2);
+  padding: 12px 16px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  color: #222222;
+}
+
+.trust-icon {
+  color: #257a4a;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+
+.submit-payment-btn {
+  width: 100%;
+  padding: 14px;
+  background: #111111;
+  color: #ffffff;
+  border-radius: 10px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  border: 1px solid #111111;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  transition: all 0.2s ease;
+}
+
+.submit-payment-btn:hover {
+  background: #333333;
+  transform: translateY(-1px);
+}
+
+/* Success Card */
+.payment-success-card {
+  max-width: 640px;
+  margin: 20px auto;
+  text-align: center;
+  padding: 48px 32px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.success-icon-wrap {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: rgba(37, 122, 74, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+}
+
+.success-check {
+  color: #257a4a;
+}
+
+.success-title {
+  font-size: 1.8rem;
+  color: #111111;
+  margin-bottom: 8px;
+}
+
+.success-desc {
+  font-size: 0.95rem;
+  color: #555555;
+  max-width: 480px;
+  line-height: 1.5;
+  margin-bottom: 32px;
+}
+
+.status-timeline-card {
+  width: 100%;
+  background: #f9f9f9;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin-bottom: 32px;
+  text-align: left;
+}
+
+.status-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  font-size: 0.9rem;
+  color: #777777;
+}
+
+.status-step.active,
+.status-step.pending {
+  color: #111111;
+}
+
+.step-dot {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.75rem;
+  color: #555555;
+  flex-shrink: 0;
+}
+
+.status-step.active .step-dot {
+  background: #257a4a;
+  color: #ffffff;
+}
+
+.status-step.pending .step-dot {
+  background: #111111;
+  color: #ffffff;
+}
+
+.step-time {
+  font-size: 0.75rem;
+  color: #888888;
+  margin-top: 2px;
+}
+
+.success-actions-row {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}

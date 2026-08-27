@@ -104,8 +104,80 @@ a {
 }
 
 :focus-visible {
-  outline: 2px solid #000000;
-  outline-offset: 2px;
+  outline: 2.5px solid #000000 !important;
+  outline-offset: 2px !important;
+}
+
+/* Accessibility Modifiers */
+html.a11y-high-contrast {
+  --ink-navy: #ffffff;
+  --carbon: #ffffff;
+  --carbon-light: #f0f0f0;
+  --slate: #000000;
+  --slate-light: #222222;
+  --receipt: #000000;
+  --receipt-text: #000000;
+  --receipt-dim: #111111;
+  --ledger-gold: #000000;
+  --trust-green: #0a5c2f;
+  --stamp-red: #b30000;
+}
+
+html.a11y-high-contrast button,
+html.a11y-high-contrast .paper-card,
+html.a11y-high-contrast .vitra-navbar,
+html.a11y-high-contrast input,
+html.a11y-high-contrast select {
+  border-color: #000000 !important;
+  font-weight: 600 !important;
+}
+
+html.a11y-large-text {
+  font-size: 115% !important;
+}
+
+html.a11y-xlarge-text {
+  font-size: 130% !important;
+}
+
+html.a11y-dyslexic {
+  font-family: "Comic Sans MS", "Arial Rounded MT Bold", "Verdana", sans-serif !important;
+  letter-spacing: 0.08em !important;
+  word-spacing: 0.12em !important;
+  line-height: 1.75 !important;
+}
+
+html.a11y-dyslexic * {
+  font-family: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+html.a11y-focus-rings :focus-visible,
+html.a11y-focus-rings *:focus {
+  outline: 3.5px solid #000000 !important;
+  outline-offset: 3px !important;
+  box-shadow: 0 0 0 6px rgba(0, 0, 0, 0.2) !important;
+}
+
+html.a11y-highlight-links a,
+html.a11y-highlight-links button,
+html.a11y-highlight-links [role="button"] {
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+  text-underline-offset: 3px !important;
+}
+
+html.a11y-reduced-motion *,
+html.a11y-reduced-motion *::before,
+html.a11y-reduced-motion *::after {
+  animation-duration: 0.001ms !important;
+  animation-iteration-count: 1 !important;
+  transition-duration: 0.001ms !important;
+  scroll-behavior: auto !important;
+}
+
+html.a11y-monochrome {
+  filter: grayscale(100%) contrast(110%);
 }
 
 /* Scrollbar */

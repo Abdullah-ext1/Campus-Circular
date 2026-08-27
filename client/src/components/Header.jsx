@@ -42,7 +42,6 @@ export default function Header({ currentUser, isAdmin, onToggleAdmin, onNavigate
     <header className="app-header" role="banner">
       <div className="brand-stamp" role="button" tabIndex={0} onClick={() => navigate("/")} aria-label="Go to home">
         <span className="brand-logo">campus circular.</span>
-        {isAdmin && <span className="badge-tag">ADMIN</span>}
       </div>
 
       <div className="header-actions">
@@ -57,6 +56,15 @@ export default function Header({ currentUser, isAdmin, onToggleAdmin, onNavigate
         </button>
 
         <button
+          className="btn-secondary"
+          onClick={() => navigate("/wanted")}
+          style={{ padding: "6px 12px", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
+          aria-label="Browse Wanted Hardware Requests"
+        >
+          <span>Wanted Board</span>
+        </button>
+
+        <button
           className="btn-primary"
           onClick={onCreateListing}
           style={{ padding: "6px 14px", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
@@ -64,16 +72,6 @@ export default function Header({ currentUser, isAdmin, onToggleAdmin, onNavigate
         >
           <Plus size={16} />
           <span>List Gear</span>
-        </button>
-
-        <button
-          className="btn-secondary"
-          onClick={onToggleAdmin}
-          style={{ padding: "6px 10px", fontSize: "0.8rem", opacity: isAdmin ? 1 : 0.6, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
-          title="Toggle Admin Mode"
-          aria-label="Toggle admin console"
-        >
-          <Settings size={15} />
         </button>
 
         {/* User Pill with Dropdown */}

@@ -9,6 +9,10 @@ import {
   Settings,
   TrendingUp,
   ShieldCheck,
+  QrCode,
+  CreditCard,
+  Check,
+  X,
 } from "lucide-react";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
 import { useAuth } from "../contexts/AuthContext.jsx";
@@ -21,13 +25,93 @@ export default function AdminPage() {
   const { lang, setLang, t } = useLanguage();
   const { user } = useAuth();
 
-  const [activeTab, setActiveTab] = useState("overview"); // overview | resources | users | disputes | config
+  const [activeTab, setActiveTab] = useState("overview"); // overview | payments | resources | users | disputes | config
   const [stats, setStats] = useState({
     totalListings: mockResources.length,
     activeBorrows: sampleBorrowings.length,
     registeredUsers: mockStudents.length,
     openDisputes: 1,
   });
+
+  // UPI Payments state
+  const [paymentsList, setPaymentsList] = useState(() => {
+    try {
+      const saved = localStorage.getItem("cc_pending_payments");
+      return saved
+        ? JSON.parse(saved)
+        : [
+            {
+              id: "PAY-948201",
+              orderId: "ORD-2026-8912",
+              items: ["Sony A7 III Mirrorless", "Camera Tripod"],
+              amount: 849,
+              deposit: 500,
+              platformFee: 49,
+              days: 3,
+              payerName: "Aarav Sharma",
+              payerPhone: "9820194821",
+              studentId: 7,
+              utrNumber: "429184910284",
+              timestamp: new Date(Date.now() - 1000 * 60 * 15).toISOString(),
+              status: "PENDING_APPROVAL",
+              upiId: "campuscircular@icici",
+            },
+            {
+              id: "PAY-382910",
+              orderId: "ORD-2026-3104",
+              items: ["Focusrite Scarlett 2i2"],
+              amount: 399,
+              deposit: 300,
+              platformFee: 49,
+              days: 2,
+              payerName: "Rohan Kapoor",
+              payerPhone: "9811029384",
+              studentId: 4,
+              utrNumber: "849201948201",
+              timestamp: new Date(Date.now() - 1000 * 60 * 60 * 2).toISOString(),
+              status: "APPROVED",
+              upiId: "campuscircular@icici",
+            },
+          ];
+    } catch {
+      return [];
+    }
+  });
+
+  useEffect(() => {
+    try {
+      localStorage.setItem("cc_pending_payments", JSON.stringify(paymentsList));
+    } catch (e) {
+      console.warn("Storage error", e);
+    }
+  }, [paymentsList]);
+
+  // Actions
+  const handleApprovePayment = (paymentId) => {
+    setPaymentsList((prev) =>
+      prev.map((p) => (p.id === paymentId ? { ...p, status: "APPROVED" } : p))
+    );
+
+    // Update borrowing status in cc_borrowings
+    try {
+      const existing = JSON.parse(localStorage.getItem("cc_borrowings") || "[]");
+      const updated = existing.map((b) => {
+        if (b.paymentStatus === "PENDING_APPROVAL") {
+          return { ...b, paymentStatus: "APPROVED", notes: "Payment Verified by Admin ✓" };
+        }
+        return b;
+      });
+      localStorage.setItem("cc_borrowings", JSON.stringify(updated));
+    } catch (e) {
+      console.warn(e);
+    }
+  };
+
+  const handleRejectPayment = (paymentId) => {
+    setPaymentsList((prev) =>
+      prev.map((p) => (p.id === paymentId ? { ...p, status: "REJECTED" } : p))
+    );
+  };
 
   // Local state for interactive moderation actions
   const [resourcesList, setResourcesList] = useState(mockResources);
@@ -144,6 +228,31 @@ export default function AdminPage() {
           </button>
 
           <button
+            className={`admin-nav-item ${activeTab === "payments" ? "active" : ""}`}
+            onClick={() => setActiveTab("payments")}
+            aria-selected={activeTab === "payments"}
+            style={{ position: "relative" }}
+          >
+            <QrCode size={16} />
+            <span>UPI Payments</span>
+            {paymentsList.filter((p) => p.status === "PENDING_APPROVAL").length > 0 && (
+              <span
+                style={{
+                  background: "#d9383a",
+                  color: "#fff",
+                  fontSize: "0.68rem",
+                  padding: "1px 6px",
+                  borderRadius: "9999px",
+                  fontWeight: 700,
+                  marginLeft: "auto",
+                }}
+              >
+                {paymentsList.filter((p) => p.status === "PENDING_APPROVAL").length}
+              </span>
+            )}
+          </button>
+
+          <button
             className={`admin-nav-item ${activeTab === "resources" ? "active" : ""}`}
             onClick={() => setActiveTab("resources")}
             aria-selected={activeTab === "resources"}
@@ -250,6 +359,136 @@ export default function AdminPage() {
                           <td>{b.durationDays} Days</td>
                           <td>
                             <span className="status-tag active">In Escrow</span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── TAB: UPI PAYMENTS & APPROVALS ── */}
+          {activeTab === "payments" && (
+            <div className="admin-overview-section">
+              <div className="stats-grid">
+                <div className="stat-card">
+                  <div className="stat-label">Pending Verification</div>
+                  <div className="stat-value" style={{ color: "#d9383a" }}>
+                    {paymentsList.filter((p) => p.status === "PENDING_APPROVAL").length}
+                  </div>
+                  <div className="stat-meta">Awaiting Admin UTR confirmation</div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-label">Total Escrow Processed</div>
+                  <div className="stat-value">
+                    ₹{paymentsList.reduce((sum, p) => sum + (p.status === "APPROVED" ? p.amount : 0), 0) + 1248}
+                  </div>
+                  <div className="stat-meta">Secure campus bank transfers</div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-label">Approved Transactions</div>
+                  <div className="stat-value" style={{ color: "#257a4a" }}>
+                    {paymentsList.filter((p) => p.status === "APPROVED").length + 4}
+                  </div>
+                  <div className="stat-meta">100% verified via ICICI UPI</div>
+                </div>
+              </div>
+
+              <div className="admin-card-box">
+                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                  <h3 className="box-title" style={{ margin: 0 }}>
+                    UPI Payment Verification Queue
+                  </h3>
+                  <span className="font-mono" style={{ fontSize: "0.75rem", color: "#666" }}>
+                    VPA: campuscircular@icici
+                  </span>
+                </div>
+
+                <div className="admin-table-wrapper">
+                  <table className="admin-table">
+                    <thead>
+                      <tr>
+                        <th>PAYMENT ID / TIME</th>
+                        <th>STUDENT / PHONE</th>
+                        <th>ITEMS / DAYS</th>
+                        <th>AMOUNT & DEPOSIT</th>
+                        <th>UPI UTR NUMBER</th>
+                        <th>STATUS</th>
+                        <th>ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {paymentsList.map((p) => (
+                        <tr key={p.id}>
+                          <td>
+                            <div className="font-mono" style={{ fontWeight: 700, color: "#111" }}>{p.id}</div>
+                            <div style={{ fontSize: "0.72rem", color: "#666" }}>
+                              {new Date(p.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                            </div>
+                          </td>
+                          <td>
+                            <div style={{ fontWeight: 600 }}>{p.payerName}</div>
+                            <div style={{ fontSize: "0.75rem", color: "#666" }}>{p.payerPhone}</div>
+                          </td>
+                          <td>
+                            <div style={{ fontSize: "0.85rem", fontWeight: 500 }}>
+                              {Array.isArray(p.items) ? p.items.join(", ") : p.items}
+                            </div>
+                            <div style={{ fontSize: "0.75rem", color: "#888" }}>{p.days} Days Loan</div>
+                          </td>
+                          <td>
+                            <div className="font-mono" style={{ fontWeight: 700, fontSize: "0.95rem" }}>₹{p.amount}</div>
+                            <div style={{ fontSize: "0.72rem", color: "#257a4a" }}>₹{p.deposit} Deposit</div>
+                          </td>
+                          <td>
+                            <span className="font-mono" style={{ background: "#f0f0f0", padding: "2px 6px", borderRadius: "4px", fontSize: "0.8rem", fontWeight: 700 }}>
+                              {p.utrNumber}
+                            </span>
+                          </td>
+                          <td>
+                            {p.status === "PENDING_APPROVAL" ? (
+                              <span className="status-tag pending" style={{ background: "rgba(217, 56, 58, 0.1)", color: "#d9383a", border: "1px solid rgba(217, 56, 58, 0.3)" }}>
+                                ⏱ PENDING APPROVAL
+                              </span>
+                            ) : p.status === "APPROVED" ? (
+                              <span className="status-tag active" style={{ background: "rgba(37, 122, 74, 0.1)", color: "#257a4a", border: "1px solid rgba(37, 122, 74, 0.3)" }}>
+                                ✓ APPROVED
+                              </span>
+                            ) : (
+                              <span className="status-tag suspended">REJECTED</span>
+                            )}
+                          </td>
+                          <td>
+                            {p.status === "PENDING_APPROVAL" ? (
+                              <div style={{ display: "flex", gap: "6px" }}>
+                                <button
+                                  type="button"
+                                  onClick={() => handleApprovePayment(p.id)}
+                                  className="action-btn-primary"
+                                  style={{ padding: "4px 8px", fontSize: "0.75rem", background: "#257a4a", color: "#fff", display: "inline-flex", alignItems: "center", gap: "4px" }}
+                                  title="Approve UPI Payment"
+                                >
+                                  <Check size={12} /> Approve
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleRejectPayment(p.id)}
+                                  className="action-btn-secondary"
+                                  style={{ padding: "4px 8px", fontSize: "0.75rem", color: "#d9383a" }}
+                                  title="Reject"
+                                >
+                                  <X size={12} />
+                                </button>
+                              </div>
+                            ) : (
+                              <span className="font-mono" style={{ fontSize: "0.75rem", color: "#888" }}>
+                                Sealed
+                              </span>
+                            )}
                           </td>
                         </tr>
                       ))}

@@ -3,6 +3,8 @@ import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import Lenis from "lenis";
 import { useLanguage } from "../contexts/LanguageContext.jsx";
+import { useAccessibility } from "../contexts/AccessibilityContext.jsx";
+import AccessibilityWidget from "./AccessibilityWidget.jsx";
 import "./LandingPage.css";
 
 // 28 Moon Items orbiting the Central Earth Text
@@ -43,6 +45,7 @@ const ORBIT_MOON_ITEMS = [
 export default function LandingPage() {
   const navigate = useNavigate();
   const { lang, setLang, t } = useLanguage();
+  const { reducedMotion } = useAccessibility();
   const landingT = t.landing;
 
   const moonOrbitRef = useRef(null);
@@ -50,6 +53,8 @@ export default function LandingPage() {
 
   // Initialize Lenis smooth scroll & Moon-to-Earth GSAP continuous orbit
   useEffect(() => {
+    if (reducedMotion) return;
+
     const lenis = new Lenis({
       duration: 1.2,
       easing: (time) => Math.min(1, 1.001 - Math.pow(2, -10 * time)),
@@ -77,10 +82,11 @@ export default function LandingPage() {
       lenis.destroy();
       if (orbitTweenRef.current) orbitTweenRef.current.kill();
     };
-  }, []);
+  }, [reducedMotion]);
 
   // On Hover: slow orbit & counter-rotate card to -discRotation
   const handleItemMouseEnter = (item, e) => {
+    if (reducedMotion) return;
     if (orbitTweenRef.current) {
       gsap.to(orbitTweenRef.current, { timeScale: 0.08, duration: 0.8, ease: "power2.out" });
     }
@@ -95,6 +101,7 @@ export default function LandingPage() {
   };
 
   const handleItemMouseLeave = (item, e) => {
+    if (reducedMotion) return;
     if (orbitTweenRef.current) {
       gsap.to(orbitTweenRef.current, { timeScale: 1, duration: 0.8, ease: "power2.inOut" });
     }
@@ -107,22 +114,49 @@ export default function LandingPage() {
     });
   };
 
+  const handleKeyDownItem = (item, e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      e.preventDefault();
+      navigate(`/product/${item.resourceId || item.id}`);
+    }
+  };
+
   return (
     <div className="vitra-landing-container">
+      {/* Universal Accessibility Widget (Fixed Bottom-Left) */}
+      <AccessibilityWidget />
+
       {/* Top Navbar */}
-      <header className="vitra-navbar">
-        <div className="vitra-logo-center" onClick={() => navigate("/")}>
+      <header className="vitra-navbar" role="banner">
+        <div
+          className="vitra-logo-center"
+          onClick={() => navigate("/")}
+          role="button"
+          tabIndex={0}
+          aria-label="Campus Circular Home"
+        >
           {landingT.brand}
         </div>
         <div className="vitra-nav-right">
-          <button className="vitra-nav-btn" onClick={() => navigate("/auth")}>
+          <button
+            className="vitra-nav-wanted-btn"
+            onClick={() => navigate("/wanted")}
+            aria-label="View Wanted Hardware Request Board"
+          >
+            Wanted Board
+          </button>
+          <button
+            className="vitra-nav-btn"
+            onClick={() => navigate("/auth")}
+            aria-label="Get Started / Sign In"
+          >
             {landingT.getStarted}
           </button>
         </div>
       </header>
 
       {/* Main Stage */}
-      <main className="vitra-stage">
+      <main className="vitra-stage" role="main">
         {/* Central "Earth" Hero Box */}
         <div className="vitra-hero-center">
           <h1 className="vitra-hero-title">
@@ -133,11 +167,26 @@ export default function LandingPage() {
           <p className="vitra-hero-desc">{landingT.heroSubtitle}</p>
 
           <div className="vitra-hero-actions">
-            <button className="vitra-start-btn" onClick={() => navigate("/find")}>
+            <button
+              className="vitra-start-btn"
+              onClick={() => navigate("/find")}
+              aria-label="Start AI Equipment Finder"
+            >
               {landingT.startBtn}
             </button>
-            <button className="vitra-secondary-btn" onClick={() => navigate("/explore")}>
+            <button
+              className="vitra-secondary-btn"
+              onClick={() => navigate("/explore")}
+              aria-label="Explore Full Catalog"
+            >
               {landingT.exploreBtn}
+            </button>
+            <button
+              className="vitra-wanted-action-btn"
+              onClick={() => navigate("/wanted")}
+              aria-label="Open Hardware Wanted Board"
+            >
+              Hardware Wants & Requests →
             </button>
           </div>
         </div>
@@ -155,6 +204,9 @@ export default function LandingPage() {
               >
                 <div
                   className="moon-item-card"
+                  tabIndex={0}
+                  role="button"
+                  aria-label={`View ${item.title} (${item.category}) details and borrow availability`}
                   style={{
                     width: `${item.size}px`,
                     height: `${item.size}px`,
@@ -163,11 +215,12 @@ export default function LandingPage() {
                   onMouseEnter={(e) => handleItemMouseEnter(item, e)}
                   onMouseLeave={(e) => handleItemMouseLeave(item, e)}
                   onClick={() => navigate(`/product/${item.resourceId || item.id}`)}
+                  onKeyDown={(e) => handleKeyDownItem(item, e)}
                   title={`View ${item.title} Details`}
                 >
                   <img
                     src={item.image}
-                    alt={item.title}
+                    alt={`${item.title} - ${item.category} campus rental equipment`}
                     className="moon-item-cutout"
                     onError={(e) => {
                       e.target.style.display = "none";

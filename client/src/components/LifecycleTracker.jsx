@@ -163,6 +163,9 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
               return (
                 <div
                   key={state.key}
+                  role="button"
+                  tabIndex={0}
+                  aria-label={`Step ${idx + 1}: ${state.label}. Status: ${isPassed ? "Completed" : isCurrent ? "Current Active Phase" : "Upcoming"}`}
                   style={{
                     display: "flex",
                     flexDirection: "column",
@@ -172,6 +175,12 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
                     cursor: "pointer",
                   }}
                   onClick={() => setCurrentStateIdx(idx)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      setCurrentStateIdx(idx);
+                    }
+                  }}
                 >
                   {/* Circle Node */}
                   <div
@@ -204,7 +213,7 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
                       fontWeight: isCurrent ? "bold" : "normal",
                     }}
                   >
-                    {state.shortLabel}
+                    {isPassed ? `✓ ${state.shortLabel}` : state.shortLabel}
                   </span>
                 </div>
               );

@@ -50,45 +50,21 @@ export default function BundleCartPage() {
     if (!allTermsChecked || isConfirmed) return;
     setIsConfirmed(true);
 
-    try {
-      const serialNo = `BRW-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      const now = new Date();
-      const dueDate = new Date();
-      dueDate.setDate(dueDate.getDate() + days);
-
-      const existing = JSON.parse(localStorage.getItem("cc_borrowings") || "[]");
-      const newBorrowing = {
-        id: serialNo,
-        borrowerId: 8, // Siddharth
-        resourceId: cartItems[0]?.id || 1,
-        ownerId: cartItems[0]?.ownerId || 2,
-        bundleItems: cartItems.map((item) => item.name),
-        currentState: 1,
-        timestamps: {
-          requested: now.toISOString(),
-          accepted: null,
-          handover: null,
-          borrowed: null,
-          due: dueDate.toISOString(),
-          returned: null,
-        },
-        isLate: false,
-        deposit: totalDeposit,
-        dailyRate: totalDailyRate,
-        totalDays: days,
-        platformFee,
-        totalAmount: finalTotal,
-        notes: `Bundle Rental (${cartItems.length} Items): ${kitTitle}`,
-      };
-
-      localStorage.setItem("cc_borrowings", JSON.stringify([newBorrowing, ...existing]));
-    } catch (e) {
-      console.error(e);
-    }
+    const orderId = `ORD-2026-${Math.floor(1000 + Math.random() * 9000)}`;
 
     setTimeout(() => {
-      navigate("/app");
-    }, 1500);
+      navigate("/payment", {
+        state: {
+          orderId,
+          items: cartItems.map((item) => item.name),
+          totalAmount: finalTotal,
+          days,
+          deposit: totalDeposit,
+          platformFee,
+          kitTitle,
+        },
+      });
+    }, 800);
   };
 
   return (

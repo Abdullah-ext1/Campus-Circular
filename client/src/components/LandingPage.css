@@ -45,6 +45,23 @@
   margin-left: auto;
 }
 
+.vitra-nav-wanted-btn {
+  background: transparent;
+  color: #111111;
+  border: 1px solid #cccccc;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.vitra-nav-wanted-btn:hover {
+  border-color: #111111;
+  background: #f4f4f4;
+}
+
 .vitra-nav-btn {
   background: #111111;
   color: #ffffff;
@@ -81,7 +98,7 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  max-width: 620px;
+  max-width: 680px;
   padding: 0 20px;
   pointer-events: auto;
 }
@@ -105,22 +122,24 @@
   color: #666666;
   line-height: 1.5;
   margin-bottom: 24px;
-  max-width: 480px;
+  max-width: 520px;
 }
 
 .vitra-hero-actions {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 12px;
+  flex-wrap: wrap;
 }
 
 .vitra-start-btn {
   background-color: #111111;
   color: #ffffff;
   border: 1px solid #111111;
-  padding: 14px 40px;
+  padding: 12px 32px;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
@@ -136,9 +155,9 @@
   background-color: transparent;
   color: #111111;
   border: 1px solid #111111;
-  padding: 14px 28px;
+  padding: 12px 24px;
   border-radius: 12px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.25s ease;
@@ -147,6 +166,24 @@
 .vitra-secondary-btn:hover {
   background-color: #111111;
   color: #ffffff;
+}
+
+.vitra-wanted-action-btn {
+  background-color: #f4f4f4;
+  color: #111111;
+  border: 1px solid #d4d4d4;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.vitra-wanted-action-btn:hover {
+  background-color: #111111;
+  color: #ffffff;
+  border-color: #111111;
 }
 
 /* Moon Orbit Viewport & Rotating Disc */
