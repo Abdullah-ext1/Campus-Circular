@@ -1,5 +1,9 @@
 import React, { useState, useEffect, createContext } from "react";
+import { Routes, Route, Navigate } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
+import LandingPage from "./components/LandingPage.jsx";
+import AuthPage from "./components/AuthPage.jsx";
+import CreateListing from "./components/CreateListing.jsx";
 import Header from "./components/Header.jsx";
 import TabBar from "./components/TabBar.jsx";
 import CommandBar from "./components/CommandBar.jsx";
@@ -15,16 +19,19 @@ import AdminPanel from "./components/AdminPanel.jsx";
 import CampusDashboard from "./components/CampusDashboard.jsx";
 import CommunityBoard from "./components/CommunityBoard.jsx";
 import CategoryIcon from "./components/CategoryIcon.jsx";
+import ProductDetailPage from "./components/ProductDetailPage.jsx";
+import PublicProfile from "./components/PublicProfile.jsx";
+import NeedFinder from "./components/NeedFinder.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
 
 export const AppContext = createContext();
 
-export default function App() {
+function CampusAppShell() {
   // Navigation & View State
   const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
-  const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement
+  const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement | createListing
   const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
 
@@ -114,173 +121,186 @@ export default function App() {
             setActiveTab("profile");
             setCurrentSubScreen(null);
           }}
+          onCreateListing={() => {
+            setCurrentSubScreen("createListing");
+          }}
         />
 
         <main className="app-main container-padded" style={{ flex: 1 }}>
-          {/* HOME TAB */}
-          {activeTab === "home" && (
+          {/* CREATE LISTING OVERRIDE */}
+          {currentSubScreen === "createListing" ? (
+            <CreateListing
+              onBack={() => setCurrentSubScreen(null)}
+              onSubmitSuccess={() => setCurrentSubScreen(null)}
+            />
+          ) : (
             <>
-              {!currentSubScreen && (
-                <CommandBar onSearch={handleSearchIntent} />
-              )}
-
-              {currentSubScreen === "kit" && (
-                <KitRecommendation
-                  kit={selectedKit}
-                  query={searchQuery}
-                  onBack={() => setCurrentSubScreen(null)}
-                  onSelectResource={handleSelectResource}
-                />
-              )}
-
-              {currentSubScreen === "detail" && (
-                <ResourceDetail
-                  resource={selectedResource}
-                  onBack={() => setCurrentSubScreen(selectedKit ? "kit" : null)}
-                  onStartBorrowing={handleStartAgreement}
-                  onSelectResource={handleSelectResource}
-                />
-              )}
-
-              {currentSubScreen === "agreement" && (
-                <BorrowingAgreement
-                  resource={selectedResource}
-                  borrower={currentUser}
-                  onBack={() => setCurrentSubScreen("detail")}
-                  onConfirm={handleConfirmAgreement}
-                />
-              )}
-            </>
-          )}
-
-          {/* BROWSE TAB */}
-          {activeTab === "browse" && (
-            <>
-              {!currentSubScreen && (
+              {/* HOME TAB */}
+              {activeTab === "home" && (
                 <>
-                  <ResourceGrid onSelectResource={handleSelectResource} />
-                  <CommunityBoard />
+                  {!currentSubScreen && (
+                    <CommandBar onSearch={handleSearchIntent} />
+                  )}
+
+                  {currentSubScreen === "kit" && (
+                    <KitRecommendation
+                      kit={selectedKit}
+                      query={searchQuery}
+                      onBack={() => setCurrentSubScreen(null)}
+                      onSelectResource={handleSelectResource}
+                    />
+                  )}
+
+                  {currentSubScreen === "detail" && (
+                    <ResourceDetail
+                      resource={selectedResource}
+                      onBack={() => setCurrentSubScreen(selectedKit ? "kit" : null)}
+                      onStartBorrowing={handleStartAgreement}
+                      onSelectResource={handleSelectResource}
+                    />
+                  )}
+
+                  {currentSubScreen === "agreement" && (
+                    <BorrowingAgreement
+                      resource={selectedResource}
+                      borrower={currentUser}
+                      onBack={() => setCurrentSubScreen("detail")}
+                      onConfirm={handleConfirmAgreement}
+                    />
+                  )}
                 </>
               )}
 
-              {currentSubScreen === "detail" && (
-                <ResourceDetail
-                  resource={selectedResource}
-                  onBack={() => setCurrentSubScreen(null)}
-                  onStartBorrowing={handleStartAgreement}
-                  onSelectResource={handleSelectResource}
-                />
+              {/* BROWSE TAB */}
+              {activeTab === "browse" && (
+                <>
+                  {!currentSubScreen && (
+                    <>
+                      <ResourceGrid onSelectResource={handleSelectResource} />
+                      <CommunityBoard />
+                    </>
+                  )}
+
+                  {currentSubScreen === "detail" && (
+                    <ResourceDetail
+                      resource={selectedResource}
+                      onBack={() => setCurrentSubScreen(null)}
+                      onStartBorrowing={handleStartAgreement}
+                      onSelectResource={handleSelectResource}
+                    />
+                  )}
+
+                  {currentSubScreen === "agreement" && (
+                    <BorrowingAgreement
+                      resource={selectedResource}
+                      borrower={currentUser}
+                      onBack={() => setCurrentSubScreen("detail")}
+                      onConfirm={handleConfirmAgreement}
+                    />
+                  )}
+                </>
               )}
 
-              {currentSubScreen === "agreement" && (
-                <BorrowingAgreement
-                  resource={selectedResource}
-                  borrower={currentUser}
-                  onBack={() => setCurrentSubScreen("detail")}
-                  onConfirm={handleConfirmAgreement}
-                />
+              {/* ACTIVITY TAB */}
+              {activeTab === "activity" && (
+                <>
+                  {!currentSubScreen && (
+                    <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "0 auto" }}>
+                      <h1 className="font-serif" style={{ color: "var(--receipt)", marginBottom: "8px" }}>
+                        Active Campus Borrowings
+                      </h1>
+                      <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginBottom: "24px" }}>
+                        Track state transitions and condition inspection protocols.
+                      </p>
+
+                      <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+                        {borrowings.map((b) => {
+                          const res = getResource(b.resourceId);
+                          const owner = getStudent(b.ownerId);
+                          return (
+                            <div
+                              key={b.id}
+                              className="paper-card"
+                              onClick={() => handleOpenTracker(b)}
+                              style={{
+                                background: "var(--carbon)",
+                                border: b.isLate ? "1px solid var(--stamp-red)" : "1px solid var(--slate)",
+                                padding: "20px",
+                                cursor: "pointer",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
+                                <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+                                  <CategoryIcon category={res?.category} size={24} />
+                                </div>
+                                <div>
+                                  <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)" }}>
+                                    {b.id}
+                                  </div>
+                                  <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)" }}>
+                                    {res.name}
+                                  </h3>
+                                  <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
+                                    Lender: {owner.name} • Due: {formatDate(b.timestamps.due)}
+                                  </div>
+                                </div>
+                              </div>
+
+                              <div style={{ textAlign: "right" }}>
+                                {b.isLate ? (
+                                  <span className="stamp stamp-red font-serif" style={{ fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                    <AlertTriangle size={12} /> OVERDUE
+                                  </span>
+                                ) : (
+                                  <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.75rem" }}>
+                                    PHASE {b.currentState + 1}/10
+                                  </span>
+                                )}
+                                <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "6px" }}>
+                                  Open Tracker →
+                                </div>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+
+                  {currentSubScreen === "tracker" && (
+                    <LifecycleTracker
+                      borrowing={activeBorrowing}
+                      onBack={() => setCurrentSubScreen(null)}
+                      onUpdateBorrowing={handleUpdateBorrowing}
+                    />
+                  )}
+
+                  {currentSubScreen === "condition" && (
+                    <ConditionReport
+                      borrowing={activeBorrowing}
+                      onBack={() => setCurrentSubScreen("tracker")}
+                    />
+                  )}
+
+                  {currentSubScreen === "settlement" && (
+                    <SettlementPanel
+                      borrowing={activeBorrowing}
+                      onBack={() => setCurrentSubScreen("tracker")}
+                    />
+                  )}
+                </>
               )}
+
+              {/* PROFILE TAB */}
+              {activeTab === "profile" && <UserProfile student={currentUser} />}
+
+              {/* ADMIN TAB */}
+              {activeTab === "admin" && <AdminPanel />}
             </>
           )}
-
-          {/* ACTIVITY TAB */}
-          {activeTab === "activity" && (
-            <>
-              {!currentSubScreen && (
-                <div className="animate-slide-up" style={{ maxWidth: "800px", margin: "0 auto" }}>
-                  <h1 className="font-serif" style={{ color: "var(--receipt)", marginBottom: "8px" }}>
-                    Active Campus Borrowings
-                  </h1>
-                  <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginBottom: "24px" }}>
-                    Track state transitions and condition inspection protocols.
-                  </p>
-
-                  <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-                    {borrowings.map((b) => {
-                      const res = getResource(b.resourceId);
-                      const owner = getStudent(b.ownerId);
-                      return (
-                        <div
-                          key={b.id}
-                          className="paper-card"
-                          onClick={() => handleOpenTracker(b)}
-                          style={{
-                            background: "var(--carbon)",
-                            border: b.isLate ? "1px solid var(--stamp-red)" : "1px solid var(--slate)",
-                            padding: "20px",
-                            cursor: "pointer",
-                            display: "flex",
-                            alignItems: "center",
-                            justifyContent: "space-between",
-                          }}
-                        >
-                          <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                            <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
-                              <CategoryIcon category={res?.category} size={24} />
-                            </div>
-                            <div>
-                              <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)" }}>
-                                {b.id}
-                              </div>
-                              <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)" }}>
-                                {res.name}
-                              </h3>
-                              <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
-                                Lender: {owner.name} • Due: {formatDate(b.timestamps.due)}
-                              </div>
-                            </div>
-                          </div>
-
-                          <div style={{ textAlign: "right" }}>
-                            {b.isLate ? (
-                              <span className="stamp stamp-red font-serif" style={{ fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "4px" }}>
-                                <AlertTriangle size={12} /> OVERDUE
-                              </span>
-                            ) : (
-                              <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.75rem" }}>
-                                PHASE {b.currentState + 1}/10
-                              </span>
-                            )}
-                            <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "6px" }}>
-                              Open Tracker →
-                            </div>
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
-
-              {currentSubScreen === "tracker" && (
-                <LifecycleTracker
-                  borrowing={activeBorrowing}
-                  onBack={() => setCurrentSubScreen(null)}
-                  onUpdateBorrowing={handleUpdateBorrowing}
-                />
-              )}
-
-              {currentSubScreen === "condition" && (
-                <ConditionReport
-                  borrowing={activeBorrowing}
-                  onBack={() => setCurrentSubScreen("tracker")}
-                />
-              )}
-
-              {currentSubScreen === "settlement" && (
-                <SettlementPanel
-                  borrowing={activeBorrowing}
-                  onBack={() => setCurrentSubScreen("tracker")}
-                />
-              )}
-            </>
-          )}
-
-          {/* PROFILE TAB */}
-          {activeTab === "profile" && <UserProfile student={currentUser} />}
-
-          {/* ADMIN TAB */}
-          {activeTab === "admin" && <AdminPanel />}
         </main>
 
         {showDashboard && (
@@ -293,5 +313,19 @@ export default function App() {
         }} />
       </div>
     </AppContext.Provider>
+  );
+}
+
+export default function App() {
+  return (
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/product/:id" element={<ProductDetailPage />} />
+      <Route path="/profile/:id" element={<PublicProfile />} />
+      <Route path="/find" element={<NeedFinder />} />
+      <Route path="/auth" element={<AuthPage />} />
+      <Route path="/app/*" element={<CampusAppShell />} />
+      <Route path="*" element={<Navigate to="/" replace />} />
+    </Routes>
   );
 }

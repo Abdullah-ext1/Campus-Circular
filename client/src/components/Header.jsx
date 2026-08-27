@@ -1,7 +1,7 @@
 import React from "react";
-import { BarChart3, Settings } from "lucide-react";
+import { BarChart3, Settings, Plus } from "lucide-react";
 
-export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggleAdmin, onOpenProfile }) {
+export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggleAdmin, onOpenProfile, onCreateListing }) {
   return (
     <header className="app-header">
       <div className="brand-stamp" onClick={() => onOpenProfile && onOpenProfile()}>
@@ -12,6 +12,15 @@ export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggle
       </div>
 
       <div className="header-actions">
+        <button
+          className="btn-primary"
+          onClick={onCreateListing}
+          style={{ padding: "6px 14px", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
+        >
+          <Plus size={16} />
+          <span>Create Listing</span>
+        </button>
+
         <button
           className="btn-secondary"
           onClick={onOpenDashboard}
@@ -43,3 +52,4 @@ export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggle
     </header>
   );
 }
+
