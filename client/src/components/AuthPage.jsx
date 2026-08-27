@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, ShieldCheck, Mail, Lock, User, GraduationCap, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, CheckCircle2 } from "lucide-react";
 import "./AuthPage.css";
 
 export default function AuthPage() {
@@ -24,129 +24,140 @@ export default function AuthPage() {
     setSubmitted(true);
     setTimeout(() => {
       navigate("/app");
-    }, 1000);
+    }, 900);
   };
 
   return (
-    <div className="auth-container">
-      <div className="auth-header-bar">
-        <button className="auth-back-btn" onClick={() => navigate("/")}>
-          <ArrowLeft size={18} />
-          <span>Back to Landing</span>
+    <div className="auth-page-root">
+      {/* Top Navbar */}
+      <header className="auth-top-navbar">
+        <button className="auth-nav-back" onClick={() => navigate("/")}>
+          <ArrowLeft size={16} />
+          <span>Back</span>
         </button>
-        <div className="auth-brand-pill">CAMPUS CIRCULAR</div>
-      </div>
 
-      <div className="auth-content">
-        <div className="auth-card">
-          {/* Card Header & Tab Switcher */}
-          <div className="auth-card-top">
-            <div className="auth-badge">
-              <ShieldCheck size={16} />
-              <span>Campus Verified Auth</span>
-            </div>
+        <div className="auth-brand-logo" onClick={() => navigate("/")}>
+          CAMPUS CIRCULAR
+        </div>
 
-            <h2 className="auth-title">
-              {isLogin ? "Welcome Back to Campus" : "Join the Circular Network"}
-            </h2>
-            <p className="auth-subtitle">
-              {isLogin
-                ? "Enter your campus credentials to access peer listings"
-                : "Register with your student ID to start sharing & borrowing"}
-            </p>
+        <div className="auth-nav-placeholder" />
+      </header>
 
-            <div className="auth-tabs">
-              <button
-                className={`auth-tab ${isLogin ? "active" : ""}`}
-                onClick={() => setIsLogin(true)}
-              >
-                Log In
-              </button>
-              <button
-                className={`auth-tab ${!isLogin ? "active" : ""}`}
-                onClick={() => setIsLogin(false)}
-              >
-                Sign Up
-              </button>
-            </div>
+      {/* Main Centered Stage */}
+      <main className="auth-stage">
+        <div className="scrib-auth-card">
+          {/* Card Title & Subtitle */}
+          <h1 className="scrib-title">
+            {isLogin ? "Welcome Back" : "Create Account"}
+          </h1>
+          <p className="scrib-subtitle">
+            {isLogin
+              ? "Sign in to access your campus peer lending & trust workspace."
+              : "Register your student credentials to start sharing & borrowing."}
+          </p>
+
+          {/* Single Sign-On Button (Google SSO) */}
+          <button
+            type="button"
+            className="google-sso-btn"
+            onClick={() => navigate("/app")}
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google"
+              className="google-icon"
+            />
+            <span>Continue with Google</span>
+          </button>
+
+          {/* Divider */}
+          <div className="scrib-divider">
+            <span className="divider-line" />
+            <span className="divider-text">
+              {isLogin ? "OR EMAIL SIGN IN" : "OR REGISTER WITH EMAIL"}
+            </span>
+            <span className="divider-line" />
           </div>
 
-          {/* Form */}
+          {/* Form / Success State */}
           {submitted ? (
-            <div className="auth-success-state">
-              <CheckCircle2 size={48} className="success-icon" />
+            <div className="scrib-success-box">
+              <CheckCircle2 size={42} className="success-check" />
               <h3>Authentication Successful!</h3>
-              <p>Entering Campus Circular app...</p>
+              <p>Entering Campus Circular workspace...</p>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="auth-form">
+            <form onSubmit={handleSubmit} className="scrib-form">
               {!isLogin && (
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <div className="input-icon-wrapper">
-                    <User size={18} className="field-icon" />
-                    <input
-                      type="text"
-                      name="name"
-                      placeholder="e.g. Siddharth Joshi"
-                      value={formData.name}
-                      onChange={handleChange}
-                      required
-                    />
-                  </div>
+                <div className="scrib-field">
+                  <label className="scrib-label">FULL NAME</label>
+                  <input
+                    type="text"
+                    name="name"
+                    placeholder="e.g. Siddharth Joshi"
+                    value={formData.name}
+                    onChange={handleChange}
+                    className="scrib-input"
+                    required
+                  />
                 </div>
               )}
 
-              <div className="form-group">
-                <label>Campus Email</label>
-                <div className="input-icon-wrapper">
-                  <Mail size={18} className="field-icon" />
-                  <input
-                    type="email"
-                    name="email"
-                    placeholder="student@campus.edu"
-                    value={formData.email}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              <div className="scrib-field">
+                <label className="scrib-label">
+                  {isLogin ? "WORK EMAIL ADDRESS" : "CAMPUS EMAIL ADDRESS"}
+                </label>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="student@campus.edu"
+                  value={formData.email}
+                  onChange={handleChange}
+                  className="scrib-input"
+                  required
+                />
               </div>
 
-              <div className="form-group">
-                <label>Password</label>
-                <div className="input-icon-wrapper">
-                  <Lock size={18} className="field-icon" />
-                  <input
-                    type="password"
-                    name="password"
-                    placeholder="••••••••"
-                    value={formData.password}
-                    onChange={handleChange}
-                    required
-                  />
-                </div>
+              <div className="scrib-field">
+                <label className="scrib-label">PASSWORD</label>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="••••••••"
+                  value={formData.password}
+                  onChange={handleChange}
+                  className="scrib-input"
+                  required
+                />
               </div>
 
               {!isLogin && (
-                <div className="form-row">
-                  <div className="form-group half">
-                    <label>Department</label>
-                    <div className="input-icon-wrapper">
-                      <GraduationCap size={18} className="field-icon" />
-                      <select name="dept" value={formData.dept} onChange={handleChange}>
-                        <option value="Computer Science">Computer Science</option>
-                        <option value="Film Studies">Film Studies</option>
-                        <option value="Journalism">Journalism</option>
-                        <option value="Mechanical Eng">Mechanical Eng</option>
-                        <option value="Design">Design</option>
-                        <option value="Biotech">Biotech</option>
-                      </select>
-                    </div>
+                <div className="scrib-field-row">
+                  <div className="scrib-field half">
+                    <label className="scrib-label">DEPARTMENT</label>
+                    <select
+                      name="dept"
+                      value={formData.dept}
+                      onChange={handleChange}
+                      className="scrib-input select-input"
+                    >
+                      <option value="Computer Science">Computer Science</option>
+                      <option value="Film Studies">Film Studies</option>
+                      <option value="Journalism">Journalism</option>
+                      <option value="Mechanical Eng">Mechanical Eng</option>
+                      <option value="Design">Design</option>
+                      <option value="Biotech">Biotech</option>
+                    </select>
                   </div>
 
-                  <div className="form-group half">
-                    <label>Academic Year</label>
-                    <select name="year" value={formData.year} onChange={handleChange} className="simple-select">
+                  <div className="scrib-field half">
+                    <label className="scrib-label">ACADEMIC YEAR</label>
+                    <select
+                      name="year"
+                      value={formData.year}
+                      onChange={handleChange}
+                      className="scrib-input select-input"
+                    >
                       <option value="1st Year">1st Year</option>
                       <option value="2nd Year">2nd Year</option>
                       <option value="3rd Year">3rd Year</option>
@@ -156,36 +167,41 @@ export default function AuthPage() {
                 </div>
               )}
 
-              <button type="submit" className="auth-submit-btn">
-                {isLogin ? "Log In to Campus" : "Create Campus Account"}
+              {/* Submit Button (Clean text without any gemini sparkle emoji!) */}
+              <button type="submit" className="scrib-submit-btn">
+                {isLogin ? "Sign In to Workspace" : "Register Workspace"}
               </button>
-
-              <div className="auth-divider">
-                <span>OR</span>
-              </div>
-
-              <div className="social-auth-buttons">
-                <button
-                  type="button"
-                  className="social-btn"
-                  onClick={() => navigate("/app")}
-                >
-                  <img
-                    src="https://www.svgrepo.com/show/475656/google-color.svg"
-                    alt="Google"
-                    width={18}
-                  />
-                  <span>Continue with Campus SSO</span>
-                </button>
-              </div>
             </form>
           )}
 
-          <div className="auth-footer-note">
-            <span>Protected by Campus Analog Trust Protocol v2.4</span>
+          {/* Toggle Link */}
+          <div className="scrib-bottom-link">
+            {isLogin ? (
+              <span>
+                Need access to Campus Circular?{" "}
+                <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => setIsLogin(false)}
+                >
+                  Create an account
+                </button>
+              </span>
+            ) : (
+              <span>
+                Already have an account?{" "}
+                <button
+                  type="button"
+                  className="link-btn"
+                  onClick={() => setIsLogin(true)}
+                >
+                  Sign in here
+                </button>
+              </span>
+            )}
           </div>
         </div>
-      </div>
+      </main>
     </div>
   );
 }

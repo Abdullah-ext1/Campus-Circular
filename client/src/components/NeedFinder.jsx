@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import { ArrowLeft, Sparkles, ArrowRight, RefreshCw, CheckCircle2, ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowLeft, ArrowRight, RefreshCw, CheckCircle2, SearchX, Grid } from "lucide-react";
 import gsap from "gsap";
 import { resources } from "../data/mockData.js";
 import { recommendResourcesWithGroq } from "../utils/groqService.js";
@@ -25,14 +25,11 @@ const SCATTERED_POSITIONS = [
   { x: 0, y: -320, scale: 0.9 },
 ];
 
-const CATEGORIES = ["ALL CATEGORIES", "MEDIA & CAMERA", "AUDIO & LIGHTING", "INSTRUMENTS", "TECH & TOOLS"];
-
 export default function NeedFinder() {
   const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const [activeCategoryIndex, setActiveCategoryIndex] = useState(0);
-  const [result, setResult] = useState(null); // { kitTitle, kitDescription, recommendedIds, reasoning }
+  const [result, setResult] = useState(null); // { hasResults, kitTitle, kitDescription, recommendedIds, reasoning }
   const [hasSearched, setHasSearched] = useState(false);
 
   const containerRef = useRef(null);
@@ -45,7 +42,6 @@ export default function NeedFinder() {
 
   // Initial float animation
   useEffect(() => {
-    // Gentle idle bobbing for scattered items
     itemRefs.current.forEach((el, index) => {
       if (el) {
         gsap.to(el, {
@@ -73,52 +69,65 @@ export default function NeedFinder() {
     setLoading(false);
 
     // Animate items with GSAP:
-    // Recommended items float into center forming a grid
-    // Non-recommended items fade out and shrink
-    const recommendedSet = new Set(recData.recommendedIds);
-    const recArray = recData.recommendedIds;
+    if (recData.hasResults && recData.recommendedIds.length > 0) {
+      const recommendedSet = new Set(recData.recommendedIds);
+      const recArray = recData.recommendedIds;
 
-    resources.forEach((resource, index) => {
-      const el = itemRefs.current[index];
-      if (!el) return;
+      resources.forEach((resource, index) => {
+        const el = itemRefs.current[index];
+        if (!el) return;
 
-      // Kill floating idle tween
-      gsap.killTweensOf(el);
+        gsap.killTweensOf(el);
 
-      if (recommendedSet.has(resource.id)) {
-        // Calculate center cluster offset
-        const matchRank = recArray.indexOf(resource.id);
-        const totalMatches = recArray.length;
-        
-        // Arrange in a compact horizontal/grid cluster in middle
-        const colWidth = 160;
-        const totalWidth = (totalMatches - 1) * colWidth;
-        const targetX = -totalWidth / 2 + matchRank * colWidth;
-        const targetY = -70; // Position slightly above the result card
+        if (recommendedSet.has(resource.id)) {
+          const matchRank = recArray.indexOf(resource.id);
+          const totalMatches = recArray.length;
+          
+          const colWidth = 160;
+          const totalWidth = (totalMatches - 1) * colWidth;
+          const targetX = -totalWidth / 2 + matchRank * colWidth;
+          const targetY = -70;
 
-        gsap.to(el, {
-          x: targetX,
-          y: targetY,
-          scale: 1.25,
-          opacity: 1,
-          zIndex: 40,
-          duration: 1.2,
-          ease: "back.out(1.4)",
-        });
-      } else {
-        // Non-matches shrink & fade to background edges
+          gsap.to(el, {
+            x: targetX,
+            y: targetY,
+            scale: 1.25,
+            opacity: 1,
+            zIndex: 40,
+            duration: 1.2,
+            ease: "back.out(1.4)",
+          });
+        } else {
+          const pos = SCATTERED_POSITIONS[index % SCATTERED_POSITIONS.length];
+          gsap.to(el, {
+            x: pos.x * 1.3,
+            y: pos.y * 1.3,
+            scale: 0.45,
+            opacity: 0.15,
+            zIndex: 5,
+            duration: 1.0,
+            ease: "power2.out",
+          });
+        }
+      });
+    } else {
+      // No results found: shrink items slightly to background
+      resources.forEach((resource, index) => {
+        const el = itemRefs.current[index];
+        if (!el) return;
+        gsap.killTweensOf(el);
+
         const pos = SCATTERED_POSITIONS[index % SCATTERED_POSITIONS.length];
         gsap.to(el, {
-          x: pos.x * 1.3,
-          y: pos.y * 1.3,
-          scale: 0.45,
-          opacity: 0.15,
-          zIndex: 5,
-          duration: 1.0,
+          x: pos.x,
+          y: pos.y,
+          scale: 0.7,
+          opacity: 0.35,
+          duration: 0.8,
           ease: "power2.out",
         });
-      }
-    });
+      });
+    }
   };
 
   // Reset view back to scattered stage
@@ -153,7 +162,7 @@ export default function NeedFinder() {
           <span>Back</span>
         </button>
         <div className="nf-brand-title" onClick={() => navigate("/")}>
-          CAMPUS CIRCULAR • DISPATCH AI
+          CAMPUS CIRCULAR
         </div>
         <button onClick={() => navigate("/app")} className="nf-app-btn">
           Go to App
@@ -165,7 +174,7 @@ export default function NeedFinder() {
         {/* Floating Items */}
         {resources.map((resource, index) => {
           const pos = SCATTERED_POSITIONS[index % SCATTERED_POSITIONS.length];
-          const isMatched = result?.recommendedIds?.includes(resource.id);
+          const isMatched = result?.hasResults && result?.recommendedIds?.includes(resource.id);
 
           return (
             <div
@@ -200,11 +209,6 @@ export default function NeedFinder() {
         {!hasSearched && (
           <div className="central-intent-overlay animate-fade-in">
             <div className="intent-card-box">
-              <div className="intent-card-header">
-                <Sparkles size={20} className="sparkle-icon" />
-                <span>AI CAMPUS DISPATCH</span>
-              </div>
-
               <h1 className="intent-card-title">What do you need?</h1>
               <p className="intent-card-sub">
                 Describe your project or event. Groq AI will analyze our campus catalog and cluster the exact gear you need right in front of you.
@@ -263,45 +267,11 @@ export default function NeedFinder() {
                 </button>
               </div>
             </div>
-
-            {/* Vitra-Style Bottom Category Filter Bar (Screenshot 2 Widget) */}
-            <div className="vitra-category-widget">
-              <button
-                className="vitra-widget-arrow"
-                onClick={() =>
-                  setActiveCategoryIndex((prev) => (prev > 0 ? prev - 1 : CATEGORIES.length - 1))
-                }
-              >
-                <ChevronLeft size={18} />
-              </button>
-
-              <div className="vitra-widget-center">
-                <div className="vitra-widget-title">{CATEGORIES[activeCategoryIndex]}</div>
-                <div className="vitra-widget-slider-track">
-                  <div
-                    className="vitra-widget-slider-thumb"
-                    style={{
-                      left: `${(activeCategoryIndex / (CATEGORIES.length - 1)) * 80 + 10}%`,
-                    }}
-                  />
-                </div>
-                <div className="vitra-widget-sub">EXPLORE ALL CAMPUS EQUIPMENT</div>
-              </div>
-
-              <button
-                className="vitra-widget-arrow"
-                onClick={() =>
-                  setActiveCategoryIndex((prev) => (prev < CATEGORIES.length - 1 ? prev + 1 : 0))
-                }
-              >
-                <ChevronRight size={18} />
-              </button>
-            </div>
           </div>
         )}
 
-        {/* Search Results Drawer / Overlay (State 3 - After Convergence) */}
-        {hasSearched && result && (
+        {/* Search Results Drawer / Overlay (State 3 - Successful Convergence) */}
+        {hasSearched && result && result.hasResults && result.recommendedIds.length > 0 && (
           <div className="result-drawer-overlay animate-slide-up">
             <div className="result-drawer-card">
               <div className="result-drawer-top">
@@ -351,6 +321,33 @@ export default function NeedFinder() {
                   onClick={() => navigate(`/product/${result.recommendedIds[0]}`)}
                 >
                   Inspect Primary Item ({resources.find((r) => r.id === result.recommendedIds[0])?.name}) →
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* NO RESULTS FOUND Overlay State */}
+        {hasSearched && result && (!result.hasResults || result.recommendedIds.length === 0) && (
+          <div className="central-intent-overlay animate-fade-in">
+            <div className="no-results-card-box">
+              <div className="no-results-icon-circle">
+                <SearchX size={36} />
+              </div>
+
+              <h2 className="no-results-title">No Matching Campus Gear Found</h2>
+              <p className="no-results-desc">
+                We couldn't find physical campus hardware for <strong>"{query}"</strong>. Campus Circular provides physical equipment like cameras, drawing tablets, laptops, instruments, audio gear, and tools.
+              </p>
+
+              <div className="no-results-actions">
+                <button className="btn-explore-all" onClick={() => navigate("/app")}>
+                  <Grid size={16} />
+                  <span>Explore All Listings (28 Items)</span>
+                </button>
+                <button className="btn-try-again" onClick={handleReset}>
+                  <RefreshCw size={14} />
+                  <span>Try Another Search</span>
                 </button>
               </div>
             </div>

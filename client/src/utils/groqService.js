@@ -8,10 +8,20 @@ import { resources, intentMappings, getResource } from "../data/mockData.js";
 const GROQ_API_KEY = import.meta.env.VITE_GROQ_API_KEY;
 const GROQ_API_URL = "https://api.groq.com/openai/v1/chat/completions";
 
+// List of physical equipment keywords for fallback validation
+const PHYSICAL_GEAR_KEYWORDS = [
+  "camera", "lens", "tripod", "mic", "microphone", "light", "lighting", "softbox",
+  "laptop", "macbook", "tablet", "ipad", "wacom", "drawing", "guitar", "midi",
+  "keyboard", "synth", "projector", "speaker", "sound", "audio", "drill", "tool",
+  "sewing", "drone", "scooter", "vr", "quest", "tent", "camping", "ps5", "console",
+  "shoot", "reel", "vlog", "video", "film", "movie", "recording", "jam", "event",
+  "presentation", "pitch", "podcast", "equipment", "gear", "hardware"
+];
+
 /**
  * Recommend equipment kit based on user need description
  * @param {string} userQuery - User's description of what they need (e.g. "I need to make a reel for my club event")
- * @returns {Promise<{ recommendedIds: number[], reasoning: Record<number, string>, kitTitle: string, kitDescription: string }>}
+ * @returns {Promise<{ hasResults: boolean, recommendedIds: number[], reasoning: Record<number, string>, kitTitle: string, kitDescription: string }>}
  */
 export async function recommendResourcesWithGroq(userQuery) {
   if (!GROQ_API_KEY || GROQ_API_KEY.includes("your_key_here")) {
@@ -29,21 +39,34 @@ export async function recommendResourcesWithGroq(userQuery) {
     dailyRate: r.dailyRate,
   }));
 
-  const systemPrompt = `You are Campus Circular's AI Resource Matcher. 
-Your goal is to parse a student's project or task intent (e.g., "I need to make a reel", "I need to perform at open mic", "I need to host a presentation") and select 2 to 4 equipment items from our campus catalog that perfectly meet their needs.
+  const systemPrompt = `You are Campus Circular's AI Resource Matcher.
+Your job is to analyze a student's request and determine if they are asking for physical campus equipment/gear (e.g. cameras, lenses, tripods, mics, lights, laptops, drawing tablets, instruments, projectors, speakers, tools, drones, scooters, camping tents, VR headsets).
 
 Available Campus Resources Catalog:
 ${JSON.stringify(catalogSummary, null, 2)}
 
-Respond strictly in valid JSON format with no markdown formatting or commentary:
+STRICT RELEVANCY RULES:
+1. If the student's request is NOT asking for physical equipment/gear to borrow (for example, if they are talking about exams like "tomorrow is my graphics exam", study advice, non-hardware tasks, general chatter, or if no catalog items are relevant), respond strictly with:
 {
-  "kitTitle": "Creative short title for the bundle (e.g., Reel Production Kit)",
+  "hasResults": false,
+  "kitTitle": "No Relevant Gear Found",
+  "kitDescription": "No physical campus equipment matches your request. Try searching for specific gear like cameras, laptops, drawing tablets, instruments, or event equipment.",
+  "recommendedIds": [],
+  "reasoning": {}
+}
+
+2. Only if the student's request genuinely requires physical campus equipment, select 1 to 4 matching resource IDs from our catalog and respond strictly with:
+{
+  "hasResults": true,
+  "kitTitle": "Creative short title for the bundle",
   "kitDescription": "Brief overview of why these items work together for the task",
   "recommendedIds": [array of resource IDs selected from catalog],
   "reasoning": {
     "resourceId": "Brief 1-sentence reason why this specific item is needed"
   }
-}`;
+}
+
+Respond strictly in valid JSON format with no markdown formatting.`;
 
   try {
     const response = await fetch(GROQ_API_URL, {
@@ -58,7 +81,7 @@ Respond strictly in valid JSON format with no markdown formatting or commentary:
           { role: "system", content: systemPrompt },
           { role: "user", content: userQuery },
         ],
-        temperature: 0.2,
+        temperature: 0.1,
         response_format: { type: "json_object" },
       }),
     });
@@ -76,10 +99,14 @@ Respond strictly in valid JSON format with no markdown formatting or commentary:
     }
 
     const parsed = JSON.parse(content);
+    const recIds = parsed.recommendedIds || [];
+    const hasResults = parsed.hasResults !== false && recIds.length > 0;
+
     return {
-      kitTitle: parsed.kitTitle || "AI Matched Gear Bundle",
-      kitDescription: parsed.kitDescription || "Curated equipment for your request",
-      recommendedIds: parsed.recommendedIds || [1, 3, 4],
+      hasResults,
+      kitTitle: parsed.kitTitle || (hasResults ? "AI Matched Gear Bundle" : "No Relevant Gear Found"),
+      kitDescription: parsed.kitDescription || (hasResults ? "Curated equipment for your request" : "No physical campus equipment matches your request."),
+      recommendedIds: hasResults ? recIds : [],
       reasoning: parsed.reasoning || {},
     };
   } catch (error) {
@@ -93,11 +120,35 @@ Respond strictly in valid JSON format with no markdown formatting or commentary:
  */
 function fallbackLocalRecommendation(userQuery) {
   const lower = userQuery.toLowerCase();
+
+  // Check if query contains any gear-related keywords
+  const isGearRelated = PHYSICAL_GEAR_KEYWORDS.some((kw) => lower.includes(kw));
+
+  if (!isGearRelated) {
+    return {
+      hasResults: false,
+      kitTitle: "No Relevant Gear Found",
+      kitDescription: "No physical campus equipment matches your request. Try searching for specific gear like cameras, laptops, drawing tablets, instruments, or event equipment.",
+      recommendedIds: [],
+      reasoning: {},
+    };
+  }
+
   const matched = intentMappings.find((mapping) =>
     mapping.keywords.some((kw) => lower.includes(kw))
   );
 
-  const kit = matched || intentMappings[0];
+  if (!matched) {
+    return {
+      hasResults: false,
+      kitTitle: "No Relevant Gear Found",
+      kitDescription: "No physical campus equipment matches your request. Try searching for specific gear like cameras, laptops, drawing tablets, instruments, or event equipment.",
+      recommendedIds: [],
+      reasoning: {},
+    };
+  }
+
+  const kit = matched;
   const reasoningMap = {};
   kit.resourceIds.forEach((id) => {
     const res = getResource(id);
@@ -105,6 +156,7 @@ function fallbackLocalRecommendation(userQuery) {
   });
 
   return {
+    hasResults: true,
     kitTitle: kit.kitName,
     kitDescription: kit.kitDescription,
     recommendedIds: kit.resourceIds,

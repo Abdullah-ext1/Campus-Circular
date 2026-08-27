@@ -19,6 +19,9 @@ import AdminPanel from "./components/AdminPanel.jsx";
 import CampusDashboard from "./components/CampusDashboard.jsx";
 import CommunityBoard from "./components/CommunityBoard.jsx";
 import CategoryIcon from "./components/CategoryIcon.jsx";
+import ProductDetailPage from "./components/ProductDetailPage.jsx";
+import PublicProfile from "./components/PublicProfile.jsx";
+import NeedFinder from "./components/NeedFinder.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
@@ -153,12 +156,19 @@ function CampusAppShell() {
         />
 
         <main className="app-main container-padded" style={{ flex: 1 }}>
-          {/* HOME TAB */}
-          {activeTab === "home" && (
+          {currentSubScreen === "createListing" ? (
+            <CreateListing
+              onBack={() => setCurrentSubScreen(null)}
+              onSubmitSuccess={() => setCurrentSubScreen(null)}
+            />
+          ) : (
             <>
-              {!currentSubScreen && (
-                <CommandBar onSearch={handleSearchIntent} />
-              )}
+              {/* HOME TAB */}
+              {activeTab === "home" && (
+                <>
+                  {!currentSubScreen && (
+                    <CommandBar onSearch={handleSearchIntent} />
+                  )}
 
                   {currentSubScreen === "kit" && (
                     <KitRecommendation
@@ -189,15 +199,15 @@ function CampusAppShell() {
                 </>
               )}
 
-          {/* BROWSE TAB */}
-          {activeTab === "browse" && (
-            <>
-              {!currentSubScreen && (
+              {/* BROWSE TAB */}
+              {activeTab === "browse" && (
                 <>
-                  <ResourceGrid onSelectResource={handleSelectResource} />
-                  <CommunityBoard />
-                </>
-              )}
+                  {!currentSubScreen && (
+                    <>
+                      <ResourceGrid onSelectResource={handleSelectResource} />
+                      <CommunityBoard />
+                    </>
+                  )}
 
                   {currentSubScreen === "detail" && (
                     <ResourceDetail
@@ -208,16 +218,16 @@ function CampusAppShell() {
                     />
                   )}
 
-              {currentSubScreen === "agreement" && (
-                <BorrowingAgreement
-                  resource={selectedResource}
-                  borrower={currentUser}
-                  onBack={() => setCurrentSubScreen("detail")}
-                  onConfirm={handleConfirmAgreement}
-                />
+                  {currentSubScreen === "agreement" && (
+                    <BorrowingAgreement
+                      resource={selectedResource}
+                      borrower={currentUser}
+                      onBack={() => setCurrentSubScreen("detail")}
+                      onConfirm={handleConfirmAgreement}
+                    />
+                  )}
+                </>
               )}
-            </>
-          )}
 
               {/* ACTIVITY TAB */}
               {activeTab === "activity" && (
@@ -259,10 +269,10 @@ function CampusAppShell() {
                                     {b.id}
                                   </div>
                                   <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)" }}>
-                                    {res.name}
+                                    {res?.name}
                                   </h3>
                                   <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
-                                    Lender: {owner.name} • Due: {formatDate(b.timestamps.due)}
+                                    Lender: {owner?.name} • Due: {formatDate(b.timestamps.due)}
                                   </div>
                                 </div>
                               </div>
