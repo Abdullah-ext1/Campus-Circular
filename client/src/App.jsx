@@ -2,6 +2,8 @@ import React, { useState, useEffect, createContext } from "react";
 import { Routes, Route, Navigate } from "react-router-dom";
 import { AlertTriangle } from "lucide-react";
 import LandingPage from "./components/LandingPage.jsx";
+import ExplorePage from "./components/ExplorePage.jsx";
+import AdminPage from "./components/AdminPage.jsx";
 import AuthPage from "./components/AuthPage.jsx";
 import CreateListing from "./components/CreateListing.jsx";
 import Header from "./components/Header.jsx";
@@ -22,23 +24,36 @@ import CategoryIcon from "./components/CategoryIcon.jsx";
 import ProductDetailPage from "./components/ProductDetailPage.jsx";
 import PublicProfile from "./components/PublicProfile.jsx";
 import NeedFinder from "./components/NeedFinder.jsx";
+import PrivateRoute from "./components/PrivateRoute.jsx";
 
-import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
+import { LanguageProvider } from "./contexts/LanguageContext.jsx";
+import { AuthProvider, useAuth } from "./contexts/AuthContext.jsx";
+
+import { students, resources, sampleBorrowings, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
 import { parseIntentWithGroq } from "./utils/groqApi.js";
 
 export const AppContext = createContext();
 
 function CampusAppShell() {
+  const { user } = useAuth();
+
   // Navigation & View State
   const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
-  const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement
+  const [currentSubScreen, setCurrentSubScreen] = useState(null);
   const [showDashboard, setShowDashboard] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(user?.role === "admin");
   const [isParsingIntent, setIsParsingIntent] = useState(false);
 
-  // Active User (Default Siddharth Joshi id:8)
-  const [currentUser, setCurrentUser] = useState(students[7]);
+  // Active User
+  const [currentUser, setCurrentUser] = useState(user || students[7]);
+
+  useEffect(() => {
+    if (user) {
+      setCurrentUser(user);
+      setIsAdmin(user.role === "admin");
+    }
+  }, [user]);
 
   // Selected Resources & Flow State
   const [searchQuery, setSearchQuery] = useState("");
@@ -64,9 +79,7 @@ function CampusAppShell() {
     setCatalogResources((prev) => prev.filter((r) => r.id !== resId));
   };
 
-  const userResources = catalogResources.filter((r) => r.ownerId === currentUser.id);
-
-  // Persistent Borrowings list from localStorage or fallback to sampleBorrowings
+  // Persistent Borrowings list
   const [borrowings, setBorrowings] = useState(() => {
     const saved = localStorage.getItem("cc_borrowings");
     return saved ? JSON.parse(saved) : sampleBorrowings;
@@ -166,9 +179,7 @@ function CampusAppShell() {
               {/* HOME TAB */}
               {activeTab === "home" && (
                 <>
-                  {!currentSubScreen && (
-                    <CommandBar onSearch={handleSearchIntent} />
-                  )}
+                  {!currentSubScreen && <CommandBar onSearch={handleSearchIntent} />}
 
                   {currentSubScreen === "kit" && (
                     <KitRecommendation
@@ -261,7 +272,14 @@ function CampusAppShell() {
                               }}
                             >
                               <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                                <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+                                <div
+                                  style={{
+                                    padding: "8px",
+                                    background: "rgba(0,0,0,0.25)",
+                                    borderRadius: "var(--radius-md)",
+                                    color: "var(--ledger-gold)",
+                                  }}
+                                >
                                   <CategoryIcon category={res?.category} size={24} />
                                 </div>
                                 <div>
@@ -279,7 +297,15 @@ function CampusAppShell() {
 
                               <div style={{ textAlign: "right" }}>
                                 {b.isLate ? (
-                                  <span className="stamp stamp-red font-serif" style={{ fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                  <span
+                                    className="stamp stamp-red font-serif"
+                                    style={{
+                                      fontSize: "0.75rem",
+                                      display: "inline-flex",
+                                      alignItems: "center",
+                                      gap: "4px",
+                                    }}
+                                  >
                                     <AlertTriangle size={12} /> OVERDUE
                                   </span>
                                 ) : (
@@ -331,14 +357,15 @@ function CampusAppShell() {
           )}
         </main>
 
-        {showDashboard && (
-          <CampusDashboard onClose={() => setShowDashboard(false)} />
-        )}
+        {showDashboard && <CampusDashboard onClose={() => setShowDashboard(false)} />}
 
-        <TabBar activeTab={activeTab} setActiveTab={(tab) => {
-          setActiveTab(tab);
-          setCurrentSubScreen(null);
-        }} />
+        <TabBar
+          activeTab={activeTab}
+          setActiveTab={(tab) => {
+            setActiveTab(tab);
+            setCurrentSubScreen(null);
+          }}
+        />
       </div>
     </AppContext.Provider>
   );
@@ -346,14 +373,27 @@ function CampusAppShell() {
 
 export default function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-      <Route path="/product/:id" element={<ProductDetailPage />} />
-      <Route path="/profile/:id" element={<PublicProfile />} />
-      <Route path="/find" element={<NeedFinder />} />
-      <Route path="/auth" element={<AuthPage />} />
-      <Route path="/app/*" element={<CampusAppShell />} />
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+    <LanguageProvider>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/explore" element={<ExplorePage />} />
+          <Route
+            path="/admin"
+            element={
+              <PrivateRoute requiredRole="admin">
+                <AdminPage />
+              </PrivateRoute>
+            }
+          />
+          <Route path="/product/:id" element={<ProductDetailPage />} />
+          <Route path="/profile/:id" element={<PublicProfile />} />
+          <Route path="/find" element={<NeedFinder />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/app/*" element={<CampusAppShell />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </AuthProvider>
+    </LanguageProvider>
   );
 }

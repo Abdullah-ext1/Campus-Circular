@@ -1,42 +1,9 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import gsap from "gsap";
 import Lenis from "lenis";
+import { useLanguage } from "../contexts/LanguageContext.jsx";
 import "./LandingPage.css";
-
-// Multilingual Content Map (EN, HI = Hindi, MR = Marathi)
-const TRANSLATIONS = {
-  EN: {
-    brand: "campus circular.",
-    heroTitle: "Welcome to the",
-    heroTitleLine2: "Campus Gear Finder",
-    heroSubtitle: "Borrow cameras, lab gear, textbooks, gaming consoles & instruments directly from students on campus.",
-    startBtn: "Start",
-    getStarted: "Get Started",
-    exploreBtn: "Explore 28 Gear Listings",
-    footerCopy: "© 2026 Campus Circular • Peer Hardware Protocol",
-  },
-  HI: {
-    brand: "कैंपस सर्कुलर.",
-    heroTitle: "कैंपस गियर फाइंडर",
-    heroTitleLine2: "में आपका स्वागत है",
-    heroSubtitle: "कैंपस के छात्रों से सीधे कैमरा, लैब उपकरण, किताबें और गेमिंग कंसोल उधार लें।",
-    startBtn: "शुरू करें",
-    getStarted: "शुरू करें",
-    exploreBtn: "28 उपकरण देखें",
-    footerCopy: "© 2026 कैंपस सर्कुलर • छात्र हार्डवेयर प्रोटोकॉल",
-  },
-  MR: {
-    brand: "कॅम्पस सर्कुलर.",
-    heroTitle: "कॅम्पस गिअर फायंडरमध्ये",
-    heroTitleLine2: "आपले स्वागत आहे",
-    heroSubtitle: "कॅम्पसमधील विद्यार्थ्यांकडून थेट कॅमेरा, लॅबचे साहित्य, पुस्तके आणि गेमिंग कन्सोल उसने घ्या.",
-    startBtn: "सुरू करा",
-    getStarted: "सुरू करा",
-    exploreBtn: "२८ साधने पहा",
-    footerCopy: "© 2026 कॅम्पस सर्कुलर • विद्यार्थी हार्डवेअर प्रोटोकॉल",
-  },
-};
 
 // 28 Moon Items orbiting the Central Earth Text
 const ORBIT_MOON_ITEMS = [
@@ -75,8 +42,8 @@ const ORBIT_MOON_ITEMS = [
 
 export default function LandingPage() {
   const navigate = useNavigate();
-  const [lang, setLang] = useState("EN");
-  const t = TRANSLATIONS[lang] || TRANSLATIONS.EN;
+  const { lang, setLang, t } = useLanguage();
+  const landingT = t.landing;
 
   const moonOrbitRef = useRef(null);
   const orbitTweenRef = useRef(null);
@@ -112,14 +79,13 @@ export default function LandingPage() {
     };
   }, []);
 
-  // On Hover: slow orbit & counter-rotate card to -discRotation so image + tooltip text are 100% STRAIGHT & LEVEL on screen!
+  // On Hover: slow orbit & counter-rotate card to -discRotation
   const handleItemMouseEnter = (item, e) => {
     if (orbitTweenRef.current) {
       gsap.to(orbitTweenRef.current, { timeScale: 0.08, duration: 0.8, ease: "power2.out" });
     }
 
     const currentDiscRot = gsap.getProperty(moonOrbitRef.current, "rotation") || 0;
-    // Counter-rotate the hovered card so: (Parent rotation + Card rotation = 0deg relative to screen)
     gsap.to(e.currentTarget, {
       rotation: -currentDiscRot,
       scale: 1.45,
@@ -146,11 +112,11 @@ export default function LandingPage() {
       {/* Top Navbar */}
       <header className="vitra-navbar">
         <div className="vitra-logo-center" onClick={() => navigate("/")}>
-          {t.brand}
+          {landingT.brand}
         </div>
         <div className="vitra-nav-right">
           <button className="vitra-nav-btn" onClick={() => navigate("/auth")}>
-            {t.getStarted}
+            {landingT.getStarted}
           </button>
         </div>
       </header>
@@ -160,18 +126,18 @@ export default function LandingPage() {
         {/* Central "Earth" Hero Box */}
         <div className="vitra-hero-center">
           <h1 className="vitra-hero-title">
-            {t.heroTitle} <br />
-            <span className="vitra-hero-title-sub">{t.heroTitleLine2}</span>
+            {landingT.heroTitle} <br />
+            <span className="vitra-hero-title-sub">{landingT.heroTitleLine2}</span>
           </h1>
 
-          <p className="vitra-hero-desc">{t.heroSubtitle}</p>
+          <p className="vitra-hero-desc">{landingT.heroSubtitle}</p>
 
           <div className="vitra-hero-actions">
             <button className="vitra-start-btn" onClick={() => navigate("/find")}>
-              {t.startBtn}
+              {landingT.startBtn}
             </button>
-            <button className="vitra-secondary-btn" onClick={() => navigate("/app")}>
-              {t.exploreBtn}
+            <button className="vitra-secondary-btn" onClick={() => navigate("/explore")}>
+              {landingT.exploreBtn}
             </button>
           </div>
         </div>
@@ -242,7 +208,7 @@ export default function LandingPage() {
             मराठी
           </span>
         </div>
-        <div className="vitra-meta-copy">{t.footerCopy}</div>
+        <div className="vitra-meta-copy">{landingT.footerCopy}</div>
       </footer>
     </div>
   );
