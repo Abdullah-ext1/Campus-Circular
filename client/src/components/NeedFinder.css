@@ -541,6 +541,66 @@
   border-color: #000000;
 }
 
+/* Footer Bundle Rent Actions */
+.result-drawer-footer {
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid #e5e5e8;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.bundle-price-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.bundle-price-label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+  color: #777777;
+}
+
+.bundle-price-val {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #000000;
+  line-height: 1.1;
+}
+
+.bundle-price-val small {
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: #666666;
+}
+
+.btn-rent-bundle {
+  background: #000000;
+  color: #ffffff;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 12px;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.15);
+}
+
+.btn-rent-bundle:hover {
+  background: #222222;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.22);
+}
+
 /* No Results Found State Card */
 .no-results-card-box {
   background: rgba(255, 255, 255, 0.96);
