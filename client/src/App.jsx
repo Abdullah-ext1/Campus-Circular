@@ -15,6 +15,7 @@ import AdminPanel from "./components/AdminPanel.jsx";
 import CampusDashboard from "./components/CampusDashboard.jsx";
 import CommunityBoard from "./components/CommunityBoard.jsx";
 import CategoryIcon from "./components/CategoryIcon.jsx";
+import UserItemListing from "./components/UserItemListing.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
@@ -24,7 +25,7 @@ export const AppContext = createContext();
 
 export default function App() {
   // Navigation & View State
-  const [activeTab, setActiveTab] = useState("home"); // home | browse | activity | profile | admin
+  const [activeTab, setActiveTab] = useState("home"); // home | browse | lend | activity | profile | admin
   const [currentSubScreen, setCurrentSubScreen] = useState(null); // kit | detail | agreement | tracker | condition | settlement
   const [showDashboard, setShowDashboard] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -38,6 +39,26 @@ export default function App() {
   const [selectedKit, setSelectedKit] = useState(null);
   const [selectedResource, setSelectedResource] = useState(null);
   const [activeBorrowing, setActiveBorrowing] = useState(sampleBorrowings[0]);
+
+  // Persistent Catalog Resources list
+  const [catalogResources, setCatalogResources] = useState(() => {
+    const saved = localStorage.getItem("cc_resources");
+    return saved ? JSON.parse(saved) : resources;
+  });
+
+  useEffect(() => {
+    localStorage.setItem("cc_resources", JSON.stringify(catalogResources));
+  }, [catalogResources]);
+
+  const handleAddResource = (newRes) => {
+    setCatalogResources((prev) => [newRes, ...prev]);
+  };
+
+  const handleDeleteResource = (resId) => {
+    setCatalogResources((prev) => prev.filter((r) => r.id !== resId));
+  };
+
+  const userResources = catalogResources.filter((r) => r.ownerId === currentUser.id);
 
   // Persistent Borrowings list from localStorage or fallback to sampleBorrowings
   const [borrowings, setBorrowings] = useState(() => {
@@ -167,7 +188,7 @@ export default function App() {
             <>
               {!currentSubScreen && (
                 <>
-                  <ResourceGrid onSelectResource={handleSelectResource} />
+                  <ResourceGrid resourcesList={catalogResources} onSelectResource={handleSelectResource} />
                   <CommunityBoard />
                 </>
               )}
@@ -190,6 +211,16 @@ export default function App() {
                 />
               )}
             </>
+          )}
+
+          {/* LEND GEAR / USER ADMIN TAB */}
+          {activeTab === "lend" && (
+            <UserItemListing
+              currentUser={currentUser}
+              userResources={userResources}
+              onAddResource={handleAddResource}
+              onDeleteResource={handleDeleteResource}
+            />
           )}
 
           {/* ACTIVITY TAB */}

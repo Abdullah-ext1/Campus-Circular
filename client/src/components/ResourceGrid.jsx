@@ -4,7 +4,7 @@ import { Search } from "lucide-react";
 import { resources as initialResources } from "../data/mockData.js";
 import { searchResources, filterResources, sortResources } from "../utils/helpers.js";
 
-export default function ResourceGrid({ onSelectResource }) {
+export default function ResourceGrid({ resourcesList = initialResources, onSelectResource }) {
   const [searchTerm, setSearchTerm] = useState("");
   const [categoryFilter, setCategoryFilter] = useState("all");
   const [availabilityFilter, setAvailabilityFilter] = useState("all");
@@ -21,13 +21,14 @@ export default function ResourceGrid({ onSelectResource }) {
     { id: "projector", label: "Displays & Projectors" },
     { id: "speaker", label: "Speakers" },
     { id: "tool", label: "Tools" },
+    { id: "drone", label: "Drones" },
   ];
 
   const processedResources = useMemo(() => {
-    let list = searchResources(searchTerm, initialResources);
+    let list = searchResources(searchTerm, resourcesList);
     list = filterResources(list, { category: categoryFilter, availability: availabilityFilter });
     return sortResources(list, sortKey);
-  }, [searchTerm, categoryFilter, availabilityFilter, sortKey]);
+  }, [searchTerm, categoryFilter, availabilityFilter, sortKey, resourcesList]);
 
   return (
     <div className="animate-slide-up" style={{ maxWidth: "1100px", margin: "0 auto" }}>
@@ -104,7 +105,7 @@ export default function ResourceGrid({ onSelectResource }) {
 
       {/* Grid Status Counter */}
       <div className="font-mono" style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", marginBottom: "16px" }}>
-        SHOWING {processedResources.length} OF {initialResources.length} CAMPUS RESOURCES
+        SHOWING {processedResources.length} OF {resourcesList.length} CAMPUS RESOURCES
       </div>
 
       {/* Items Grid */}
