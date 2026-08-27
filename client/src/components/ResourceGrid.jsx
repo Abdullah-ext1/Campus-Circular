@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
 import ResourceCard from "./ResourceCard.jsx";
+import { Search } from "lucide-react";
 import { resources as initialResources } from "../data/mockData.js";
 import { searchResources, filterResources, sortResources } from "../utils/helpers.js";
 
@@ -11,15 +12,15 @@ export default function ResourceGrid({ onSelectResource }) {
 
   const categories = [
     { id: "all", label: "All Items" },
-    { id: "camera", label: "📷 Cameras" },
-    { id: "tripod", label: "📐 Tripods" },
-    { id: "microphone", label: "🎤 Audio & Mics" },
-    { id: "lighting", label: "💡 Lighting" },
-    { id: "laptop", label: "💻 Laptops" },
-    { id: "instrument", label: "🎸 Music" },
-    { id: "projector", label: "📽️ Display" },
-    { id: "speaker", label: "🔊 Speakers" },
-    { id: "tool", label: "🔧 Tools" },
+    { id: "camera", label: "Cameras" },
+    { id: "tripod", label: "Tripods" },
+    { id: "microphone", label: "Audio & Mics" },
+    { id: "lighting", label: "Lighting" },
+    { id: "laptop", label: "Laptops" },
+    { id: "instrument", label: "Music & Instruments" },
+    { id: "projector", label: "Displays & Projectors" },
+    { id: "speaker", label: "Speakers" },
+    { id: "tool", label: "Tools" },
   ];
 
   const processedResources = useMemo(() => {
@@ -115,7 +116,9 @@ export default function ResourceGrid({ onSelectResource }) {
 
       {processedResources.length === 0 && (
         <div style={{ textAlign: "center", padding: "48px 0", color: "var(--receipt-dim)" }}>
-          <div style={{ fontSize: "2rem" }}>🔍</div>
+          <div style={{ display: "flex", justifyContent: "center", marginBottom: "8px" }}>
+            <Search size={36} color="var(--receipt-dim)" />
+          </div>
           <div className="font-serif" style={{ fontSize: "1.2rem", marginTop: "12px", color: "var(--receipt)" }}>
             No resources matched your criteria
           </div>

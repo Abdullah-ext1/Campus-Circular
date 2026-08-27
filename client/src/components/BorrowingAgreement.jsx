@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import FeeBreakdown from "./FeeBreakdown.jsx";
 import TrustBadge from "./TrustBadge.jsx";
+import CategoryIcon from "./CategoryIcon.jsx";
 import { getStudent } from "../data/mockData.js";
 import { calculateFees, formatDate } from "../utils/helpers.js";
 
@@ -178,8 +179,9 @@ export default function BorrowingAgreement({ resource, borrower, onBack, onConfi
             <div style={{ fontSize: "0.75rem", color: "var(--receipt-dim)" }} className="font-mono">
               IDENTIFIED RESOURCE
             </div>
-            <div style={{ fontSize: "1.1rem", fontWeight: "bold" }}>
-              {resource.emoji} {resource.name}
+            <div style={{ fontSize: "1.1rem", fontWeight: "bold", display: "flex", alignItems: "center", gap: "8px", marginTop: "2px" }}>
+              <CategoryIcon category={resource.category} size={20} />
+              <span>{resource.name}</span>
             </div>
           </div>
 

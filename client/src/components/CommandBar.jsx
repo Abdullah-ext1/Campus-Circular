@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Zap } from "lucide-react";
+import CategoryIcon from "./CategoryIcon.jsx";
 import { suggestedQueries, recentActivity, getStudent, getResource } from "../data/mockData.js";
 
 export default function CommandBar({ onSearch }) {
@@ -86,9 +88,12 @@ export default function CommandBar({ onSearch }) {
                 borderRadius: "var(--radius-full)",
                 borderStyle: "dashed",
                 padding: "6px 14px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "6px",
               }}
             >
-              <span style={{ color: "var(--ledger-gold)", marginRight: "6px" }}>⚡</span>
+              <Zap size={14} style={{ color: "var(--ledger-gold)" }} />
               {queryText}
             </button>
           ))}
@@ -131,7 +136,9 @@ export default function CommandBar({ onSearch }) {
                 }}
               >
                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-                  <span style={{ fontSize: "1.2rem" }}>{resource.emoji}</span>
+                  <div style={{ color: "var(--ledger-gold)", display: "flex", alignItems: "center" }}>
+                    <CategoryIcon category={resource?.category} size={16} />
+                  </div>
                   <div>
                     <span style={{ fontWeight: 600 }}>{student.name}</span>{" "}
                     <span style={{ color: "var(--receipt-dim)" }}>

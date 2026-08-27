@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { Check, AlertTriangle } from "lucide-react";
 import { formatDate } from "../utils/helpers.js";
 
 export default function ConditionReport({ borrowing, onBack }) {
@@ -35,28 +36,31 @@ export default function ConditionReport({ borrowing, onBack }) {
           padding: "28px",
         }}
       >
-        <div style={{ textAlign: "center", marginBottom: "24px" }}>
-          <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.85rem" }}>
-            CONDITION VERIFICATION RECORD
+        <div style={{ marginBottom: "24px" }}>
+          <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.75rem" }}>
+            DUAL-STEP VERIFICATION REPORT
           </span>
-          <h2 className="font-serif" style={{ marginTop: "8px", color: "var(--receipt)" }}>
-            Before & After Inspection Comparison
+          <h2 className="font-serif" style={{ color: "var(--receipt)", marginTop: "6px" }}>
+            Pre & Post Condition Handover Comparison
           </h2>
+          <p style={{ color: "var(--receipt-dim)", fontSize: "0.9rem", marginTop: "4px" }}>
+            Both borrower and lender cross-verify standard condition parameters to preserve trust score integrity.
+          </p>
         </div>
 
-        {/* Side by side comparison */}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: "20px" }}>
-          {/* Before Handover */}
+        {/* Comparison Grid */}
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "20px" }}>
+          {/* Handover Baseline */}
           <div style={{ background: "rgba(0,0,0,0.2)", padding: "20px", borderRadius: "var(--radius-md)", border: "1px solid var(--slate)" }}>
             <span className="stamp stamp-green font-serif" style={{ fontSize: "0.7rem" }}>
-              1. PRE-HANDOVER REPORT
+              1. INITIAL HANDOVER (BASELINE)
             </span>
-            <div style={{ fontSize: "1.2rem", fontWeight: "bold", marginTop: "12px", color: "var(--receipt)" }}>
-              Score: {borrowing?.conditionBefore?.score || 92}% OK
+            <div style={{ marginTop: "16px", display: "flex", flexDirection: "column", gap: "10px", fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
+              <div>• All optical elements cleaned & verified</div>
+              <div>• Battery charged at 100%</div>
+              <div>• All 4 cables and lens caps accounted for</div>
+              <div>• Zero major structural blemishes</div>
             </div>
-            <p style={{ color: "var(--receipt-dim)", fontSize: "0.85rem", marginTop: "4px" }}>
-              "{borrowing?.conditionBefore?.notes || "No major blemishes recorded during handover."}"
-            </p>
             <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)", marginTop: "12px" }}>
               Verified: {formatDate(borrowing?.timestamps?.handover)}
             </div>
@@ -81,9 +85,12 @@ export default function ConditionReport({ borrowing, onBack }) {
                         borderRadius: "var(--radius-sm)",
                         background: c.status === "ok" ? "var(--trust-green)" : "var(--slate)",
                         color: "#fff",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
                       }}
                     >
-                      ✓ OK
+                      <Check size={12} /> OK
                     </button>
                     <button
                       onClick={() => handleToggle(c.id, "issue")}
@@ -93,9 +100,12 @@ export default function ConditionReport({ borrowing, onBack }) {
                         borderRadius: "var(--radius-sm)",
                         background: c.status === "issue" ? "var(--stamp-red)" : "var(--slate)",
                         color: "#fff",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "4px",
                       }}
                     >
-                      ⚠ Issue
+                      <AlertTriangle size={12} /> Issue
                     </button>
                   </div>
                 </div>

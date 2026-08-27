@@ -1,5 +1,7 @@
 import React from "react";
 import TrustBadge from "./TrustBadge.jsx";
+import CategoryIcon from "./CategoryIcon.jsx";
+import { MapPin } from "lucide-react";
 import { getStudent, distances } from "../data/mockData.js";
 import { formatCurrency } from "../utils/helpers.js";
 
@@ -34,9 +36,11 @@ export default function ResourceCard({ resource, onSelect }) {
       }}
     >
       <div>
-        {/* Top bar: Emoji + Status badge */}
+        {/* Top bar: Icon + Status badge */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "12px" }}>
-          <span style={{ fontSize: "2.2rem" }}>{resource.emoji}</span>
+          <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+            <CategoryIcon category={resource.category} size={24} />
+          </div>
           {resource.available ? (
             <span className="font-mono" style={{ fontSize: "0.7rem", color: "var(--trust-green)", background: "var(--trust-green-bg)", padding: "2px 8px", borderRadius: "var(--radius-sm)" }}>
               ● AVAILABLE
@@ -56,8 +60,10 @@ export default function ResourceCard({ resource, onSelect }) {
           {resource.name}
         </h3>
 
-        <div style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", display: "flex", gap: "8px", flexWrap: "wrap" }}>
-          <span>📍 {distance}</span>
+        <div style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", display: "flex", gap: "8px", alignItems: "center", flexWrap: "wrap" }}>
+          <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+            <MapPin size={12} /> {distance}
+          </span>
           <span>•</span>
           <span>Condition {resource.condition}%</span>
         </div>

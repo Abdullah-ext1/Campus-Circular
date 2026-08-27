@@ -1,4 +1,5 @@
 import React, { useState, useEffect, createContext } from "react";
+import { AlertTriangle } from "lucide-react";
 import Header from "./components/Header.jsx";
 import TabBar from "./components/TabBar.jsx";
 import CommandBar from "./components/CommandBar.jsx";
@@ -13,6 +14,7 @@ import ResourceGrid from "./components/ResourceGrid.jsx";
 import AdminPanel from "./components/AdminPanel.jsx";
 import CampusDashboard from "./components/CampusDashboard.jsx";
 import CommunityBoard from "./components/CommunityBoard.jsx";
+import CategoryIcon from "./components/CategoryIcon.jsx";
 
 import { students, resources, sampleBorrowings, findMatchingKit, getResource, getStudent } from "./data/mockData.js";
 import { formatDate } from "./utils/helpers.js";
@@ -213,7 +215,9 @@ export default function App() {
                           }}
                         >
                           <div style={{ display: "flex", alignItems: "center", gap: "16px" }}>
-                            <span style={{ fontSize: "2rem" }}>{res.emoji}</span>
+                            <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+                              <CategoryIcon category={res?.category} size={24} />
+                            </div>
                             <div>
                               <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)" }}>
                                 {b.id}
@@ -229,8 +233,8 @@ export default function App() {
 
                           <div style={{ textAlign: "right" }}>
                             {b.isLate ? (
-                              <span className="stamp stamp-red font-serif" style={{ fontSize: "0.75rem" }}>
-                                ⚠ OVERDUE
+                              <span className="stamp stamp-red font-serif" style={{ fontSize: "0.75rem", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                                <AlertTriangle size={12} /> OVERDUE
                               </span>
                             ) : (
                               <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.75rem" }}>

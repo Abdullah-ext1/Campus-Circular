@@ -1,4 +1,5 @@
 import React from "react";
+import { Trophy, X } from "lucide-react";
 import { dashboardMetrics } from "../data/mockData.js";
 import { formatCurrency } from "../utils/helpers.js";
 
@@ -46,9 +47,9 @@ export default function CampusDashboard({ onClose }) {
           <button
             className="btn-secondary"
             onClick={onClose}
-            style={{ fontSize: "1.2rem", padding: "4px 12px" }}
+            style={{ padding: "6px 10px", display: "inline-flex", alignItems: "center", justifyContent: "center" }}
           >
-            ✕
+            <X size={18} />
           </button>
         </div>
 
@@ -126,8 +127,8 @@ export default function CampusDashboard({ onClose }) {
 
         {/* Top Lenders Leaderboard */}
         <div>
-          <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)", marginBottom: "12px" }}>
-            🏆 Top Campus Lenders Leaderboard
+          <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
+            <Trophy size={18} style={{ color: "var(--ledger-gold)" }} /> Top Campus Lenders Leaderboard
           </h3>
 
           <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>

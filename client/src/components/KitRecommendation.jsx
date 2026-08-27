@@ -1,5 +1,7 @@
 import React from "react";
 import TrustBadge from "./TrustBadge.jsx";
+import CategoryIcon from "./CategoryIcon.jsx";
+import { MapPin } from "lucide-react";
 import { getStudent, distances } from "../data/mockData.js";
 import { formatCurrency } from "../utils/helpers.js";
 
@@ -28,36 +30,42 @@ export default function KitRecommendation({ kit, query, onBack, onSelectResource
           background: "var(--carbon)",
           border: "var(--border-gold)",
           padding: "24px",
-          marginBottom: "32px",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          flexWrap: "wrap",
-          gap: "16px",
+          marginBottom: "24px",
         }}
       >
-        <div>
-          <div style={{ marginBottom: "8px" }}>
-            <span className="stamp stamp-gold font-serif">{kit.kitName}</span>
-            <span className="badge-tag" style={{ marginLeft: "12px" }}>
-              {kit.bundleDiscount}% BUNDLE SAVINGS
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px" }}>
+          <div>
+            <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.8rem" }}>
+              AI MATCHED GEAR BUNDLE
             </span>
+            <h1 className="font-serif" style={{ color: "var(--receipt)", marginTop: "8px" }}>
+              {kit.name}
+            </h1>
+            <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem", marginTop: "4px" }}>
+              {kit.description}
+            </p>
           </div>
-          <p style={{ color: "var(--receipt-dim)", fontSize: "0.95rem" }}>{kit.kitDescription}</p>
-        </div>
 
-        <div style={{ textAlign: "right" }}>
-          <div className="font-mono" style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", textDecoration: "line-through" }}>
-            {formatCurrency(totalDaily)}/day
-          </div>
-          <div className="font-mono" style={{ fontSize: "1.5rem", color: "var(--ledger-gold)", fontWeight: 700 }}>
-            {formatCurrency(discountedDaily)}/day
+          <div style={{ textAlign: "right" }}>
+            <div className="font-mono" style={{ fontSize: "1.6rem", color: "var(--ledger-gold)", fontWeight: "bold" }}>
+              {formatCurrency(discountedDaily)}
+              <span style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", fontWeight: "normal" }}>/day</span>
+            </div>
+            {kit.bundleDiscount > 0 && (
+              <span className="stamp stamp-green font-serif" style={{ fontSize: "0.7rem", marginTop: "4px" }}>
+                SAVE {kit.bundleDiscount}% BUNDLE
+              </span>
+            )}
           </div>
         </div>
       </div>
 
-      {/* Connected Kit Resources (Luggage Tag Chain) */}
-      <div style={{ display: "flex", flexDirection: "column", gap: "16px", position: "relative" }}>
+      {/* Resource Luggage Tag Cards */}
+      <div style={{ display: "flex", flexDirection: "column", gap: "16px", marginBottom: "32px" }}>
+        <div className="font-mono" style={{ fontSize: "0.8rem", color: "var(--receipt-dim)", textTransform: "uppercase" }}>
+          Bundle Manifest ({kit.resources.length} Verified Items):
+        </div>
+
         {kit.resources.map((resource, index) => {
           const owner = getStudent(resource.ownerId);
           const distance = distances[resource.id] || "5 min walk";
@@ -90,7 +98,8 @@ export default function KitRecommendation({ kit, query, onBack, onSelectResource
                   justifyContent: "space-between",
                   cursor: "pointer",
                   transition: "all 0.2s ease",
-                  position: "relative",
+                  flexWrap: "wrap",
+                  gap: "16px",
                 }}
                 onMouseEnter={(e) => {
                   e.currentTarget.style.borderColor = "var(--ledger-gold)";
@@ -114,14 +123,18 @@ export default function KitRecommendation({ kit, query, onBack, onSelectResource
                     title="Tag attachment ring"
                   />
 
-                  <span style={{ fontSize: "2rem" }}>{resource.emoji}</span>
+                  <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+                    <CategoryIcon category={resource.category} size={24} />
+                  </div>
 
                   <div>
                     <h3 className="font-serif" style={{ fontSize: "1.1rem", color: "var(--receipt)" }}>
                       {resource.name}
                     </h3>
                     <div style={{ display: "flex", alignItems: "center", gap: "12px", marginTop: "4px", fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
-                      <span>📍 {distance}</span>
+                      <span style={{ display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                        <MapPin size={12} /> {distance}
+                      </span>
                       <span>•</span>
                       <span>Condition: {resource.condition}%</span>
                     </div>

@@ -1,5 +1,7 @@
 import React from "react";
 import TrustBadge from "./TrustBadge.jsx";
+import CategoryIcon from "./CategoryIcon.jsx";
+import { MapPin } from "lucide-react";
 import { getStudent, resources as allResources } from "../data/mockData.js";
 import { formatCurrency, formatDate, suggestAlternatives } from "../utils/helpers.js";
 
@@ -39,7 +41,9 @@ export default function ResourceDetail({ resource, onBack, onStartBorrowing, onS
               position: "relative",
             }}
           >
-            <span style={{ fontSize: "5rem" }}>{resource.emoji}</span>
+            <div style={{ padding: "20px", background: "rgba(0,0,0,0.3)", borderRadius: "var(--radius-lg)", color: "var(--ledger-gold)" }}>
+              <CategoryIcon category={resource.category} size={64} />
+            </div>
             <div
               className="stamp stamp-green font-serif"
               style={{
@@ -51,7 +55,7 @@ export default function ResourceDetail({ resource, onBack, onStartBorrowing, onS
             >
               CONDITION: {resource.condition}% OK
             </div>
-            <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "8px" }}>
+            <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--receipt-dim)", marginTop: "12px" }}>
               Inspected: {formatDate(resource.lastInspection)}
             </div>
           </div>
@@ -81,8 +85,8 @@ export default function ResourceDetail({ resource, onBack, onStartBorrowing, onS
                   <div style={{ fontSize: "0.85rem", color: "var(--receipt-dim)" }}>
                     {owner.dept} • Year {owner.year}
                   </div>
-                  <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)", marginTop: "2px" }}>
-                    📍 {owner.room}
+                  <div className="font-mono" style={{ fontSize: "0.75rem", color: "var(--ledger-gold)", marginTop: "4px", display: "inline-flex", alignItems: "center", gap: "4px" }}>
+                    <MapPin size={12} /> {owner.room}
                   </div>
                 </div>
               </div>
@@ -223,7 +227,9 @@ export default function ResourceDetail({ resource, onBack, onStartBorrowing, onS
                     gap: "12px",
                   }}
                 >
-                  <span style={{ fontSize: "1.8rem" }}>{alt.emoji}</span>
+                  <div style={{ padding: "6px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-sm)", color: "var(--ledger-gold)", display: "flex", alignItems: "center" }}>
+                    <CategoryIcon category={alt.category} size={20} />
+                  </div>
                   <div>
                     <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "var(--receipt)" }}>
                       {alt.name}

@@ -1,25 +1,27 @@
 import React from "react";
+import { Send, Grid, Clock, ShieldCheck, ShieldAlert } from "lucide-react";
 
 export default function TabBar({ activeTab, setActiveTab, unreadCount = 0 }) {
   const tabs = [
-    { id: "home", label: "Dispatch", icon: "⌘" },
-    { id: "browse", label: "Browse", icon: "◇" },
-    { id: "activity", label: "Activity", icon: "↻" },
-    { id: "profile", label: "Trust Profile", icon: "●" },
-    { id: "admin", label: "Governance", icon: "⚙" },
+    { id: "home", label: "Dispatch", Icon: Send },
+    { id: "browse", label: "Browse", Icon: Grid },
+    { id: "activity", label: "Activity", Icon: Clock },
+    { id: "profile", label: "Trust Profile", Icon: ShieldCheck },
+    { id: "admin", label: "Governance", Icon: ShieldAlert },
   ];
 
   return (
     <nav className="app-tabbar">
       {tabs.map((tab) => {
         const isActive = activeTab === tab.id;
+        const IconComponent = tab.Icon;
         return (
           <button
             key={tab.id}
             className={`tab-item ${isActive ? "active" : ""}`}
             onClick={() => setActiveTab(tab.id)}
           >
-            <span className="tab-icon font-mono">{tab.icon}</span>
+            <IconComponent size={16} className="tab-icon" />
             <span>{tab.label}</span>
           </button>
         );

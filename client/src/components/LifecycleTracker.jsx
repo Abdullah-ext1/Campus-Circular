@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { AlertTriangle, Settings } from "lucide-react";
+import CategoryIcon from "./CategoryIcon.jsx";
 import { lifecycleStates, getStudent, getResource } from "../data/mockData.js";
 import { formatDate, formatTime } from "../utils/helpers.js";
 
@@ -40,11 +42,11 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
           ← Back to Activity
         </button>
         <span className="font-mono" style={{ fontSize: "0.8rem", color: "var(--ledger-gold)" }}>
-          LIFECYCLE TRACKER • {borrowing.id}
+          AGREEMENT #{borrowing.id} • STATE DISPATCH
         </span>
       </div>
 
-      {/* Main Container Card */}
+      {/* Main Ledger Card */}
       <div
         className="paper-card"
         style={{
@@ -58,8 +60,10 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
         {/* Item & Parties Header */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "16px", marginBottom: "24px" }}>
           <div>
-            <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-              <span style={{ fontSize: "2rem" }}>{resource.emoji}</span>
+            <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
+              <div style={{ padding: "8px", background: "rgba(0,0,0,0.25)", borderRadius: "var(--radius-md)", color: "var(--ledger-gold)" }}>
+                <CategoryIcon category={resource?.category} size={28} />
+              </div>
               <div>
                 <h2 className="font-serif" style={{ color: "var(--receipt)" }}>
                   {resource.name}
@@ -73,8 +77,8 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
 
           <div style={{ textAlign: "right" }}>
             {isLate ? (
-              <span className="stamp stamp-red font-serif" style={{ fontSize: "0.85rem" }}>
-                ⚠ AT RISK / LATE RETURN
+              <span className="stamp stamp-red font-serif" style={{ fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+                <AlertTriangle size={14} /> AT RISK / LATE RETURN
               </span>
             ) : (
               <span className="stamp stamp-gold font-serif" style={{ fontSize: "0.85rem" }}>
@@ -111,9 +115,18 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
                 color: isLate ? "var(--stamp-red)" : "var(--ledger-gold)",
                 fontWeight: "bold",
                 letterSpacing: "1px",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: "4px",
               }}
             >
-              {isLate ? "⚠ AT RISK ZONE" : "IN TRUST ZONE"}
+              {isLate ? (
+                <>
+                  <AlertTriangle size={10} /> AT RISK ZONE
+                </>
+              ) : (
+                "IN TRUST ZONE"
+              )}
             </span>
           </div>
 
@@ -241,8 +254,8 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
           gap: "12px",
         }}
       >
-        <span className="font-mono" style={{ fontSize: "0.8rem", color: "var(--ledger-gold)" }}>
-          ⚙ DEMO STATE CONTROL CONTROLS
+        <span className="font-mono" style={{ fontSize: "0.8rem", color: "var(--ledger-gold)", display: "inline-flex", alignItems: "center", gap: "6px" }}>
+          <Settings size={14} /> DEMO STATE CONTROL CONTROLS
         </span>
 
         <div style={{ display: "flex", gap: "12px" }}>
@@ -251,7 +264,7 @@ export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing 
             onClick={handleToggleLate}
             style={{ borderColor: isLate ? "var(--stamp-red)" : "var(--slate)" }}
           >
-            {isLate ? "Reset to On-Time" : "⚠ Simulate Late Return"}
+            {isLate ? "Reset to On-Time" : "Simulate Late Return"}
           </button>
 
           <button

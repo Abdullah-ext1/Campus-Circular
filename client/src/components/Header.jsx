@@ -1,4 +1,5 @@
 import React from "react";
+import { BarChart3, Settings } from "lucide-react";
 
 export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggleAdmin, onOpenProfile }) {
   return (
@@ -14,18 +15,19 @@ export default function Header({ currentUser, onOpenDashboard, isAdmin, onToggle
         <button
           className="btn-secondary"
           onClick={onOpenDashboard}
-          style={{ padding: "6px 12px", fontSize: "0.85rem" }}
+          style={{ padding: "6px 12px", fontSize: "0.85rem", display: "inline-flex", alignItems: "center", gap: "6px" }}
         >
-          📊 <span className="font-mono">Impact</span>
+          <BarChart3 size={15} style={{ color: "var(--ledger-gold)" }} />
+          <span className="font-mono">Impact</span>
         </button>
 
         <button
           className="btn-secondary"
           onClick={onToggleAdmin}
-          style={{ padding: "6px 10px", fontSize: "0.8rem", opacity: isAdmin ? 1 : 0.7 }}
+          style={{ padding: "6px 10px", fontSize: "0.8rem", opacity: isAdmin ? 1 : 0.7, display: "inline-flex", alignItems: "center", justifyContent: "center" }}
           title="Toggle Admin Mode"
         >
-          ⚙️
+          <Settings size={15} />
         </button>
 
         <div className="user-pill" onClick={onOpenProfile}>
