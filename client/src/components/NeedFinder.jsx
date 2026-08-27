@@ -72,6 +72,7 @@ export default function NeedFinder() {
     if (recData.hasResults && recData.recommendedIds.length > 0) {
       const recommendedSet = new Set(recData.recommendedIds);
       const recArray = recData.recommendedIds;
+      const isMobile = window.innerWidth < 600;
 
       resources.forEach((resource, index) => {
         const el = itemRefs.current[index];
@@ -83,15 +84,15 @@ export default function NeedFinder() {
           const matchRank = recArray.indexOf(resource.id);
           const totalMatches = recArray.length;
           
-          const colWidth = 160;
+          const colWidth = isMobile ? 95 : 150;
           const totalWidth = (totalMatches - 1) * colWidth;
           const targetX = -totalWidth / 2 + matchRank * colWidth;
-          const targetY = -70;
+          const targetY = isMobile ? -140 : -170;
 
           gsap.to(el, {
             x: targetX,
             y: targetY,
-            scale: 1.25,
+            scale: isMobile ? 0.95 : 1.2,
             opacity: 1,
             zIndex: 40,
             duration: 1.2,
@@ -272,7 +273,7 @@ export default function NeedFinder() {
 
         {/* Search Results Drawer / Overlay (State 3 - Successful Convergence) */}
         {hasSearched && result && result.hasResults && result.recommendedIds.length > 0 && (
-          <div className="result-drawer-overlay animate-slide-up">
+          <div className="result-drawer-overlay">
             <div className="result-drawer-card">
               <div className="result-drawer-top">
                 <div>
