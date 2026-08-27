@@ -5,10 +5,10 @@ import { lifecycleStates, getStudent, getResource } from "../data/mockData.js";
 import { formatDate, formatTime } from "../utils/helpers.js";
 
 export default function LifecycleTracker({ borrowing, onBack, onUpdateBorrowing }) {
-  if (!borrowing) return null;
+  const [currentStateIdx, setCurrentStateIdx] = useState(borrowing?.currentState || 4);
+  const [isLate, setIsLate] = useState(borrowing?.isLate || false);
 
-  const [currentStateIdx, setCurrentStateIdx] = useState(borrowing.currentState || 4);
-  const [isLate, setIsLate] = useState(borrowing.isLate || false);
+  if (!borrowing) return null;
 
   const resource = getResource(borrowing.resourceId);
   const owner = getStudent(borrowing.ownerId);

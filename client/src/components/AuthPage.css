@@ -1,279 +1,293 @@
-/* Scribologist-Inspired Black & White Auth Page Styles */
+/* ============================================
+   CAMPUS CIRCULAR — Auth Page (Black & White Theme)
+   ============================================ */
 
 .auth-page-root {
   min-height: 100vh;
-  width: 100vw;
-  background-color: #f8fafc;
-  color: #0f172a;
+  background-color: #ffffff;
+  color: #111111;
   font-family: var(--font-sans, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif);
   display: flex;
   flex-direction: column;
 }
 
-/* Navbar */
-.auth-top-navbar {
+/* ── Topbar ── */
+.auth-topbar {
   height: 80px;
-  padding: 0 44px;
+  padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: transparent;
+  border-bottom: 1px solid #eeeeee;
 }
 
 .auth-nav-back {
-  display: flex;
+  display: inline-flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.88rem;
-  font-weight: 500;
-  color: #475569;
   background: transparent;
-  border: none;
+  border: 1px solid #e5e5e5;
+  color: #555555;
+  padding: 8px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
-  padding: 6px 12px;
-  border-radius: 8px;
   transition: all 0.2s ease;
 }
 
 .auth-nav-back:hover {
-  background-color: #e2e8f0;
-  color: #0f172a;
+  border-color: #111111;
+  color: #111111;
 }
 
-.auth-brand-logo {
-  font-family: var(--font-sans, "Helvetica Neue", Helvetica, Arial, sans-serif);
-  font-size: 1.35rem;
+.auth-brand {
+  font-size: 1.4rem;
   font-weight: 800;
   letter-spacing: -0.5px;
-  color: #0f172a;
+  color: #000000;
   cursor: pointer;
 }
 
-.auth-nav-placeholder {
-  width: 80px;
+.auth-lang-picker {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.82rem;
+  font-weight: 600;
 }
 
-/* Main Centered Stage */
+.auth-lang-picker span {
+  color: #888888;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.auth-lang-picker span.active {
+  color: #000000;
+  border-bottom: 2px solid #000000;
+}
+
+/* ── Center Stage ── */
 .auth-stage {
   flex: 1;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px 20px 60px;
+  padding: 40px 20px;
 }
 
-/* Card Container (Scribologist rounded card) */
-.scrib-auth-card {
+.auth-card {
   width: 100%;
-  max-width: 460px;
-  background-color: #ffffff;
-  border: 1px solid #eef2f6;
-  border-radius: 28px;
-  padding: 44px 40px;
-  box-shadow: 0 20px 60px rgba(15, 23, 42, 0.06);
-  text-align: left;
-}
-
-/* Headline - Bold Welcome Back */
-.scrib-title {
-  font-family: "DM Serif Display", Georgia, serif;
-  font-size: 2.6rem;
-  font-weight: 700;
-  line-height: 1.1;
-  letter-spacing: -0.8px;
-  color: #0f172a;
-  margin-bottom: 10px;
-}
-
-.scrib-subtitle {
-  font-size: 0.95rem;
-  color: #64748b;
-  line-height: 1.5;
-  margin-bottom: 28px;
-}
-
-/* Google SSO Button */
-.google-sso-btn {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
+  max-width: 520px;
   background: #ffffff;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 13px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #0f172a;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  margin-bottom: 28px;
+  border: 1px solid #e5e5e5;
+  border-radius: 20px;
+  padding: 36px;
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.04);
 }
 
-.google-sso-btn:hover {
-  background-color: #f8fafc;
-  border-color: #cbd5e1;
-}
-
-.google-icon {
-  width: 20px;
-  height: 20px;
-}
-
-/* Divider */
-.scrib-divider {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  margin-bottom: 28px;
-}
-
-.divider-line {
-  flex: 1;
-  height: 1px;
-  background-color: #e2e8f0;
-}
-
-.divider-text {
-  font-size: 0.68rem;
-  font-weight: 700;
-  letter-spacing: 1.5px;
-  color: #94a3b8;
-  font-family: var(--font-mono, monospace);
-}
-
-/* Form Fields */
-.scrib-form {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.scrib-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.scrib-field-row {
-  display: flex;
-  gap: 12px;
-}
-
-.scrib-field.half {
-  flex: 1;
-}
-
-.scrib-label {
-  font-size: 0.7rem;
-  font-weight: 700;
-  letter-spacing: 1.2px;
-  color: #475569;
-  font-family: var(--font-mono, monospace);
-}
-
-.scrib-input {
-  width: 100%;
-  padding: 14px 16px;
-  background: #f8fafc;
-  border: 1.5px solid #e2e8f0;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  color: #0f172a;
-  outline: none;
-  transition: all 0.2s ease;
-  font-family: inherit;
-}
-
-.scrib-input::placeholder {
-  color: #94a3b8;
-}
-
-.scrib-input:focus {
-  background: #ffffff;
-  border-color: #0f172a;
-  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.06);
-}
-
-.select-input {
-  cursor: pointer;
-}
-
-/* Primary Submit Button (Clean solid text, no emojis) */
-.scrib-submit-btn {
-  margin-top: 10px;
-  width: 100%;
-  padding: 16px;
-  background-color: #212529;
-  color: #ffffff;
-  border: none;
-  border-radius: 12px;
-  font-size: 0.95rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 14px rgba(33, 37, 41, 0.2);
-}
-
-.scrib-submit-btn:hover {
-  background-color: #000000;
-  transform: translateY(-1px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.25);
-}
-
-/* Success Box */
-.scrib-success-box {
+.auth-card-header {
   text-align: center;
-  padding: 32px 16px;
+  margin-bottom: 28px;
 }
 
-.success-check {
-  color: #0f172a;
-  margin-bottom: 16px;
-}
-
-.scrib-success-box h3 {
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #0f172a;
+.auth-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  letter-spacing: -0.8px;
+  color: #111111;
   margin-bottom: 8px;
 }
 
-.scrib-success-box p {
+.auth-subtitle {
   font-size: 0.9rem;
-  color: #64748b;
+  color: #666666;
+  line-height: 1.4;
 }
 
-/* Bottom Toggle Link */
-.scrib-bottom-link {
-  margin-top: 28px;
-  text-align: center;
-  font-size: 0.88rem;
-  color: #64748b;
-}
-
-.link-btn {
-  background: transparent;
-  border: none;
+.section-label {
+  display: block;
+  font-size: 0.72rem;
   font-weight: 700;
-  color: #0f172a;
+  color: #888888;
+  letter-spacing: 0.5px;
+  margin-bottom: 12px;
+  text-align: center;
+}
+
+/* ── Role Select Cards ── */
+.quick-select-group {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.role-select-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  background: #fafafa;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  padding: 16px;
   cursor: pointer;
-  padding: 0;
-  font-size: inherit;
-  text-decoration: underline;
+  text-align: left;
+  transition: all 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.link-btn:hover {
-  color: #334155;
+.role-select-card:hover {
+  background: #ffffff;
+  border-color: #111111;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
 }
 
-@media (max-width: 520px) {
-  .scrib-auth-card {
-    padding: 32px 24px;
-    border-radius: 20px;
+.role-icon-box {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  background: #111111;
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.role-card-text {
+  flex: 1;
+}
+
+.role-card-name {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111111;
+}
+
+.role-card-desc {
+  font-size: 0.78rem;
+  color: #666666;
+  line-height: 1.3;
+}
+
+.role-tag {
+  font-size: 0.7rem;
+  font-family: monospace;
+  background: #eeeeee;
+  color: #555555;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+/* ── Divider ── */
+.auth-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 24px 0 16px 0;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  border-bottom: 1px solid #eeeeee;
+}
+
+.auth-divider span {
+  font-size: 0.7rem;
+  font-weight: 700;
+  color: #888888;
+  padding: 0 12px;
+  letter-spacing: 0.5px;
+}
+
+/* ── Manual Input Form ── */
+.auth-manual-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.manual-input-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.auth-text-input {
+  flex: 1;
+  padding: 12px 16px;
+  background: #f8f8f8;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #111111;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.auth-text-input:focus {
+  background: #ffffff;
+  border-color: #111111;
+}
+
+.auth-submit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #111111;
+  color: #ffffff;
+  border: 1px solid #111111;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  white-space: nowrap;
+}
+
+.auth-submit-btn:hover {
+  background: #333333;
+}
+
+.auth-error-msg {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.78rem;
+  color: #d9383a;
+  padding-left: 4px;
+}
+
+.auth-success-box {
+  text-align: center;
+  padding: 32px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.success-check-icon {
+  color: #111111;
+}
+
+.auth-success-box h3 {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #111111;
+}
+
+@media (max-width: 600px) {
+  .auth-topbar {
+    padding: 0 20px;
   }
-  .scrib-title {
-    font-size: 2.1rem;
+  .auth-card {
+    padding: 24px;
+  }
+  .manual-input-wrapper {
+    flex-direction: column;
   }
 }
