@@ -24,6 +24,7 @@ import CategoryIcon from "./components/CategoryIcon.jsx";
 import ProductDetailPage from "./components/ProductDetailPage.jsx";
 import PublicProfile from "./components/PublicProfile.jsx";
 import NeedFinder from "./components/NeedFinder.jsx";
+import BundleCartPage from "./components/BundleCartPage.jsx";
 import PrivateRoute from "./components/PrivateRoute.jsx";
 
 import { LanguageProvider } from "./contexts/LanguageContext.jsx";
@@ -389,6 +390,7 @@ export default function App() {
           <Route path="/product/:id" element={<ProductDetailPage />} />
           <Route path="/profile/:id" element={<PublicProfile />} />
           <Route path="/find" element={<NeedFinder />} />
+          <Route path="/cart" element={<BundleCartPage />} />
           <Route path="/auth" element={<AuthPage />} />
           <Route path="/app/*" element={<CampusAppShell />} />
           <Route path="*" element={<Navigate to="/" replace />} />

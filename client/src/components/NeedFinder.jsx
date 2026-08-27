@@ -277,7 +277,6 @@ export default function NeedFinder() {
             <div className="result-drawer-card">
               <div className="result-drawer-top">
                 <div>
-                  <span className="ai-matched-stamp">GROQ AI RECOMMENDED BUNDLE</span>
                   <h2 className="result-kit-title">{result.kitTitle}</h2>
                   <p className="result-kit-desc">{result.kitDescription}</p>
                 </div>
@@ -310,18 +309,47 @@ export default function NeedFinder() {
                           <CheckCircle2 size={13} className="check-icon" /> {reason}
                         </p>
                       </div>
-                      <button className="btn-rec-detail">View Details →</button>
+                      <button
+                        className="btn-rec-detail"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          navigate("/cart", {
+                            state: {
+                              bundleIds: [item.id],
+                              kitTitle: `${item.name} Rental`,
+                              kitDescription: item.description,
+                            },
+                          });
+                        }}
+                      >
+                        Rent Item →
+                      </button>
                     </div>
                   );
                 })}
               </div>
 
+              {/* Bundle Rental Footer Action */}
               <div className="result-drawer-footer">
+                <div className="bundle-price-info">
+                  <span className="bundle-price-label">Total Rental Rate</span>
+                  <span className="bundle-price-val">
+                    ₹{result.recommendedIds.reduce((sum, id) => sum + (resources.find((r) => r.id === id)?.dailyRate || 0), 0)} <small>/ day</small>
+                  </span>
+                </div>
                 <button
-                  className="btn-primary-dispatch"
-                  onClick={() => navigate(`/product/${result.recommendedIds[0]}`)}
+                  className="btn-rent-bundle"
+                  onClick={() =>
+                    navigate("/cart", {
+                      state: {
+                        bundleIds: result.recommendedIds,
+                        kitTitle: result.kitTitle,
+                        kitDescription: result.kitDescription,
+                      },
+                    })
+                  }
                 >
-                  Inspect Primary Item ({resources.find((r) => r.id === result.recommendedIds[0])?.name}) →
+                  Rent Equipment Bundle ({result.recommendedIds.length} Items) →
                 </button>
               </div>
             </div>
