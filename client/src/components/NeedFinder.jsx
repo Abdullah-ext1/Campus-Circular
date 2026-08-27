@@ -165,13 +165,13 @@ export default function NeedFinder() {
         <div className="nf-brand-title" onClick={() => navigate("/")}>
           CAMPUS CIRCULAR
         </div>
-        <button onClick={() => navigate("/app")} className="nf-app-btn">
-          Go to App
+        <button onClick={() => navigate("/explore")} className="nf-app-btn" aria-label="Explore campus listings">
+          Explore Listings
         </button>
       </header>
 
       {/* Scattered Vitra-style Canvas Container */}
-      <div className="scattered-canvas">
+      <div className="scattered-canvas" role="main">
         {/* Floating Items */}
         {resources.map((resource, index) => {
           const pos = SCATTERED_POSITIONS[index % SCATTERED_POSITIONS.length];
@@ -187,14 +187,17 @@ export default function NeedFinder() {
               }}
               onClick={() => navigate(`/product/${resource.id}`)}
               title={`${resource.name} — ₹${resource.dailyRate}/day`}
+              role="button"
+              tabIndex={0}
+              aria-label={`View ${resource.name}`}
             >
               <div className="scattered-item-img-box">
                 <img
-                  src={resource.image || "https://pngimg.com/uploads/photo_camera/photo_camera_PNG101641.png"}
+                  src={resource.image}
                   alt={resource.name}
                   className="scattered-img"
                   onError={(e) => {
-                    e.target.src = "https://pngimg.com/uploads/photo_camera/photo_camera_PNG101641.png";
+                    e.target.src = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=300&auto=format&fit=crop&q=80";
                   }}
                 />
               </div>
@@ -370,11 +373,11 @@ export default function NeedFinder() {
               </p>
 
               <div className="no-results-actions">
-                <button className="btn-explore-all" onClick={() => navigate("/app")}>
+                <button className="btn-explore-all" onClick={() => navigate("/explore")} aria-label="Explore all listings">
                   <Grid size={16} />
                   <span>Explore All Listings (28 Items)</span>
                 </button>
-                <button className="btn-try-again" onClick={handleReset}>
+                <button className="btn-try-again" onClick={handleReset} aria-label="Try another search">
                   <RefreshCw size={14} />
                   <span>Try Another Search</span>
                 </button>

@@ -120,18 +120,6 @@ export default function AdminPage() {
         </div>
 
         <div className="admin-topbar-right">
-          <div className="admin-lang-picker">
-            <span className={lang === "EN" ? "active" : ""} onClick={() => setLang("EN")}>
-              EN
-            </span>
-            <span className={lang === "HI" ? "active" : ""} onClick={() => setLang("HI")}>
-              हिंदी
-            </span>
-            <span className={lang === "MR" ? "active" : ""} onClick={() => setLang("MR")}>
-              मराठी
-            </span>
-          </div>
-
           <div className="admin-user-pill">
             <ShieldCheck size={16} />
             <span>{user?.name || "Administrator"}</span>
@@ -141,7 +129,7 @@ export default function AdminPage() {
 
       {/* Main Admin Body: Left Tab Nav + Right Content */}
       <div className="admin-layout container">
-        <aside className="admin-sidebar-nav">
+        <aside className="admin-sidebar-nav" role="navigation" aria-label="Admin sidebar">
           <div className="admin-sidebar-header">
             <h3>Control Center</h3>
           </div>
@@ -149,41 +137,55 @@ export default function AdminPage() {
           <button
             className={`admin-nav-item ${activeTab === "overview" ? "active" : ""}`}
             onClick={() => setActiveTab("overview")}
+            aria-selected={activeTab === "overview"}
           >
             <TrendingUp size={16} />
-            <span>{t.admin.tabOverview}</span>
+            <span>Overview</span>
           </button>
 
           <button
             className={`admin-nav-item ${activeTab === "resources" ? "active" : ""}`}
             onClick={() => setActiveTab("resources")}
+            aria-selected={activeTab === "resources"}
           >
             <Package size={16} />
-            <span>{t.admin.tabResources}</span>
+            <span>Moderation</span>
           </button>
 
           <button
             className={`admin-nav-item ${activeTab === "users" ? "active" : ""}`}
             onClick={() => setActiveTab("users")}
+            aria-selected={activeTab === "users"}
           >
             <Users size={16} />
-            <span>{t.admin.tabUsers}</span>
+            <span>User Directory</span>
           </button>
 
           <button
             className={`admin-nav-item ${activeTab === "disputes" ? "active" : ""}`}
             onClick={() => setActiveTab("disputes")}
+            aria-selected={activeTab === "disputes"}
           >
             <AlertTriangle size={16} />
-            <span>{t.admin.tabDisputes}</span>
+            <span>Disputes</span>
+          </button>
+
+          <button
+            className={`admin-nav-item ${activeTab === "impact" ? "active" : ""}`}
+            onClick={() => setActiveTab("impact")}
+            aria-selected={activeTab === "impact"}
+          >
+            <TrendingUp size={16} />
+            <span>Campus Impact</span>
           </button>
 
           <button
             className={`admin-nav-item ${activeTab === "config" ? "active" : ""}`}
             onClick={() => setActiveTab("config")}
+            aria-selected={activeTab === "config"}
           >
             <Settings size={16} />
-            <span>{t.admin.tabConfig}</span>
+            <span>Protocol Rules</span>
           </button>
         </aside>
 
@@ -426,7 +428,88 @@ export default function AdminPage() {
             </div>
           )}
 
-          {/* ── TAB 5: PLATFORM CONFIG ── */}
+          {/* ── TAB 5: CAMPUS IMPACT ── */}
+          {activeTab === "impact" && (
+            <div className="admin-card-box">
+              <h3 className="box-title">Campus Circular Impact Analytics</h3>
+              <p style={{ color: "#666666", fontSize: "0.88rem", marginBottom: "20px" }}>
+                Insights into peer asset circulation, money saved, and sustainable campus resource sharing.
+              </p>
+
+              <div className="stats-grid" style={{ marginBottom: "24px" }}>
+                <div className="stat-card">
+                  <div className="stat-label">Student Money Saved</div>
+                  <div className="stat-value">₹84,500</div>
+                  <div className="stat-meta">Avoided retail hardware purchases</div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-label">Equipment Circulation Rate</div>
+                  <div className="stat-value">88.4%</div>
+                  <div className="stat-meta">Active gear shared this semester</div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-label">On-Time Return Reliability</div>
+                  <div className="stat-value">97.2%</div>
+                  <div className="stat-meta">Prompt return before due date</div>
+                </div>
+
+                <div className="stat-card">
+                  <div className="stat-label">Avg. Peer Trust Index</div>
+                  <div className="stat-value">86%</div>
+                  <div className="stat-meta">Verified student credibility</div>
+                </div>
+              </div>
+
+              <div style={{ background: "#fafafa", border: "1px solid #e5e5e5", borderRadius: "12px", padding: "20px" }}>
+                <h4 style={{ fontSize: "0.95rem", fontWeight: 700, marginBottom: "12px" }}>Most Circulated Campus Gear Categories</h4>
+                <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", marginBottom: "4px" }}>
+                      <span>Cameras & Media (DSLR, Tripods, Mics, Gimbals)</span>
+                      <span className="font-bold">42% of all loans</span>
+                    </div>
+                    <div style={{ height: "8px", background: "#e5e5e5", borderRadius: "4px", overflow: "hidden" }}>
+                      <div style={{ width: "42%", height: "100%", background: "#111111" }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", marginBottom: "4px" }}>
+                      <span>Academic & Laptops (MacBooks, Tablets, Graphing Displays)</span>
+                      <span className="font-bold">28% of all loans</span>
+                    </div>
+                    <div style={{ height: "8px", background: "#e5e5e5", borderRadius: "4px", overflow: "hidden" }}>
+                      <div style={{ width: "28%", height: "100%", background: "#111111" }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", marginBottom: "4px" }}>
+                      <span>Event & Audio (Projectors, Speakers, Lights)</span>
+                      <span className="font-bold">18% of all loans</span>
+                    </div>
+                    <div style={{ height: "8px", background: "#e5e5e5", borderRadius: "4px", overflow: "hidden" }}>
+                      <div style={{ width: "18%", height: "100%", background: "#111111" }} />
+                    </div>
+                  </div>
+
+                  <div>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: "0.82rem", marginBottom: "4px" }}>
+                      <span>Music & Tools (Guitars, Synths, Drills, Sewing)</span>
+                      <span className="font-bold">12% of all loans</span>
+                    </div>
+                    <div style={{ height: "8px", background: "#e5e5e5", borderRadius: "4px", overflow: "hidden" }}>
+                      <div style={{ width: "12%", height: "100%", background: "#111111" }} />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ── TAB 6: PLATFORM CONFIG ── */}
           {activeTab === "config" && (
             <div className="admin-card-box">
               <h3 className="box-title">{t.admin.tabConfig}</h3>

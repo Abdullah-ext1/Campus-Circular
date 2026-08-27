@@ -1,177 +1,196 @@
 import React, { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ArrowLeft, CheckCircle2, Shield, UserCheck, User, ArrowRight, AlertCircle } from "lucide-react";
+import { useNavigate, useLocation } from "react-router-dom";
+import { ArrowLeft, CheckCircle2, Lock, User as UserIcon, Eye, EyeOff, AlertCircle, ShieldCheck } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext.jsx";
-import { useLanguage } from "../contexts/LanguageContext.jsx";
+import { students } from "../data/mockData.js";
 import "./AuthPage.css";
 
 export default function AuthPage() {
-  const [usernameInput, setUsernameInput] = useState("");
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   const [submitted, setSubmitted] = useState(false);
+  const [selectedStudentPreview, setSelectedStudentPreview] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
   const { login } = useAuth();
-  const { lang, setLang, t } = useLanguage();
 
-  const handleSelectPreset = (roleName) => {
-    const res = login(roleName);
-    if (res.success) {
-      setSubmitted(true);
-      setTimeout(() => {
-        if (roleName === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/explore");
-        }
-      }, 700);
+  const handleSignIn = (e) => {
+    if (e) e.preventDefault();
+    if (!username.trim()) {
+      setErrorMsg("Please enter your username");
+      return;
     }
-  };
 
-  const handleCustomSubmit = (e) => {
-    e.preventDefault();
-    if (!usernameInput.trim()) return;
-
-    const res = login(usernameInput);
+    const res = login(username);
     if (res.success) {
       setErrorMsg("");
       setSubmitted(true);
+      const redirectPath = location.state?.from?.pathname || (res.user.role === "admin" ? "/admin" : "/explore");
       setTimeout(() => {
-        if (res.user.role === "admin") {
-          navigate("/admin");
-        } else {
-          navigate("/explore");
-        }
-      }, 700);
+        navigate(redirectPath, { replace: true });
+      }, 600);
     } else {
-      setErrorMsg(t.auth.invalidUser);
+      setErrorMsg(`Unknown username "${username}". You can use any student name (e.g. arjun, priya, kavya, zoya, admin).`);
     }
+  };
+
+  const handleDemoQuickFill = (s) => {
+    setUsername(s.username);
+    setPassword("••••••••");
+    setSelectedStudentPreview(s);
+    setErrorMsg("");
   };
 
   return (
     <div className="auth-page-root">
-      {/* Top Bar */}
-      <header className="auth-topbar">
-        <button className="auth-nav-back" onClick={() => navigate("/")}>
+      {/* Accessible Skip Link */}
+      <a href="#auth-form" className="skip-to-content">
+        Skip to sign in form
+      </a>
+
+      {/* Top Navbar */}
+      <header className="auth-topbar" role="banner">
+        <button
+          className="auth-nav-back"
+          onClick={() => navigate("/")}
+          aria-label="Return to landing page"
+        >
           <ArrowLeft size={16} />
-          <span>{t.nav.back}</span>
+          <span>Back</span>
         </button>
 
-        <div className="auth-brand" onClick={() => navigate("/")}>
-          {t.nav.brand}
+        <div className="auth-brand" onClick={() => navigate("/")} role="button" tabIndex={0}>
+          campus circular.
         </div>
 
-        <div className="auth-lang-picker">
-          <span className={lang === "EN" ? "active" : ""} onClick={() => setLang("EN")}>
-            EN
-          </span>
-          <span className={lang === "HI" ? "active" : ""} onClick={() => setLang("HI")}>
-            हिंदी
-          </span>
-          <span className={lang === "MR" ? "active" : ""} onClick={() => setLang("MR")}>
-            मराठी
-          </span>
-        </div>
+        <div className="auth-topbar-placeholder" />
       </header>
 
-      {/* Main Authentication Card */}
-      <main className="auth-stage">
-        <div className="auth-card">
+      {/* Main Sign In Form Stage */}
+      <main className="auth-stage" role="main">
+        <div className="auth-card" id="auth-form">
           <div className="auth-card-header">
-            <h1 className="auth-title">{t.auth.title}</h1>
-            <p className="auth-subtitle">{t.auth.subtitle}</p>
+            <h1 className="auth-title">Sign In</h1>
+            <p className="auth-subtitle">
+              Choose from verified campus peer profiles or enter any student handle
+            </p>
           </div>
 
           {submitted ? (
-            <div className="auth-success-box">
-              <CheckCircle2 size={48} className="success-check-icon" />
-              <h3>{t.auth.successNotice}</h3>
+            <div className="auth-success-box" role="status" aria-live="polite">
+              <CheckCircle2 size={44} className="success-check-icon" />
+              <h3>Identity Authenticated</h3>
+              <p>Entering Campus Circular workspace as {username}...</p>
             </div>
           ) : (
-            <div className="auth-body">
-              {/* 3 Preset One-Click Profiles */}
-              <div className="quick-select-group">
-                <span className="section-label">{t.auth.quickSelectHeader}</span>
-
-                {/* 1. Admin Role */}
-                <button
-                  type="button"
-                  className="role-select-card"
-                  onClick={() => handleSelectPreset("admin")}
-                >
-                  <div className="role-icon-box">
-                    <Shield size={20} />
-                  </div>
-                  <div className="role-card-text">
-                    <div className="role-card-name">{t.auth.adminRole}</div>
-                    <div className="role-card-desc">{t.auth.adminDesc}</div>
-                  </div>
-                  <span className="role-tag">username: admin</span>
-                </button>
-
-                {/* 2. Lister Role */}
-                <button
-                  type="button"
-                  className="role-select-card"
-                  onClick={() => handleSelectPreset("lister")}
-                >
-                  <div className="role-icon-box">
-                    <UserCheck size={20} />
-                  </div>
-                  <div className="role-card-text">
-                    <div className="role-card-name">{t.auth.listerRole}</div>
-                    <div className="role-card-desc">{t.auth.listerDesc}</div>
-                  </div>
-                  <span className="role-tag">username: lister</span>
-                </button>
-
-                {/* 3. User Role */}
-                <button
-                  type="button"
-                  className="role-select-card"
-                  onClick={() => handleSelectPreset("user")}
-                >
-                  <div className="role-icon-box">
-                    <User size={20} />
-                  </div>
-                  <div className="role-card-text">
-                    <div className="role-card-name">{t.auth.userRole}</div>
-                    <div className="role-card-desc">{t.auth.userDesc}</div>
-                  </div>
-                  <span className="role-tag">username: user</span>
-                </button>
-              </div>
-
-              {/* Divider */}
-              <div className="auth-divider">
-                <span>{t.auth.usernameInputLabel}</span>
-              </div>
-
-              {/* Manual input form */}
-              <form onSubmit={handleCustomSubmit} className="auth-manual-form">
-                <div className="manual-input-wrapper">
+            <form onSubmit={handleSignIn} className="auth-form" noValidate>
+              {/* Username field */}
+              <div className="form-group">
+                <label htmlFor="username-input" className="form-label">
+                  Student Username
+                </label>
+                <div className="input-icon-wrapper">
+                  <UserIcon size={18} className="field-icon" aria-hidden="true" />
                   <input
+                    id="username-input"
                     type="text"
-                    className="auth-text-input"
-                    placeholder={t.auth.usernamePlaceholder}
-                    value={usernameInput}
+                    className="form-input"
+                    placeholder="e.g. arjun, kavya, priya, zoya, admin..."
+                    value={username}
                     onChange={(e) => {
-                      setUsernameInput(e.target.value);
-                      setErrorMsg("");
+                      setUsername(e.target.value);
+                      if (errorMsg) setErrorMsg("");
+                      const matched = students.find((s) => s.username === e.target.value.toLowerCase());
+                      setSelectedStudentPreview(matched || null);
                     }}
+                    autoComplete="username"
+                    required
+                    aria-describedby={errorMsg ? "auth-error" : undefined}
                   />
-                  <button type="submit" className="auth-submit-btn">
-                    <span>{t.auth.submitBtn}</span>
-                    <ArrowRight size={15} />
+                </div>
+              </div>
+
+              {/* Matched Profile Badge Preview */}
+              {selectedStudentPreview && (
+                <div style={{ display: "flex", alignItems: "center", gap: "10px", background: "#f5f5f5", padding: "8px 12px", borderRadius: "8px", border: "1px solid #e0e0e0" }}>
+                  <img
+                    src={selectedStudentPreview.avatar}
+                    alt={selectedStudentPreview.name}
+                    style={{ width: "28px", height: "28px", borderRadius: "50%", objectFit: "cover" }}
+                  />
+                  <div style={{ flex: 1, fontSize: "0.78rem" }}>
+                    <div style={{ fontWeight: 700, color: "#111111" }}>{selectedStudentPreview.name}</div>
+                    <div style={{ color: "#666666" }}>{selectedStudentPreview.dept} • Year {selectedStudentPreview.year}</div>
+                  </div>
+                  <div style={{ fontSize: "0.75rem", fontWeight: 700, color: "#111111", display: "flex", alignItems: "center", gap: "4px" }}>
+                    <ShieldCheck size={14} /> {selectedStudentPreview.trustScore}%
+                  </div>
+                </div>
+              )}
+
+              {/* Password field */}
+              <div className="form-group">
+                <div className="label-row">
+                  <label htmlFor="password-input" className="form-label">
+                    Password
+                  </label>
+                  <span className="pwd-hint">Any password for demo</span>
+                </div>
+                <div className="input-icon-wrapper">
+                  <Lock size={18} className="field-icon" aria-hidden="true" />
+                  <input
+                    id="password-input"
+                    type={showPassword ? "text" : "password"}
+                    className="form-input"
+                    placeholder="Enter your password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    autoComplete="current-password"
+                  />
+                  <button
+                    type="button"
+                    className="toggle-password-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    {showPassword ? <EyeOff size={16} /> : <Eye size={16} />}
                   </button>
                 </div>
-                {errorMsg && (
-                  <div className="auth-error-msg">
-                    <AlertCircle size={14} />
-                    <span>{errorMsg}</span>
-                  </div>
-                )}
-              </form>
-            </div>
+              </div>
+
+              {/* Error Notice */}
+              {errorMsg && (
+                <div className="auth-error-msg" id="auth-error" role="alert">
+                  <AlertCircle size={15} />
+                  <span>{errorMsg}</span>
+                </div>
+              )}
+
+              {/* Submit CTA */}
+              <button type="submit" className="auth-submit-btn">
+                Sign In
+              </button>
+
+              {/* Quick autofill directory chips */}
+              <div className="demo-accounts-row">
+                <span className="demo-label">Available Student Profiles:</span>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", width: "100%", marginTop: "4px" }}>
+                  {students.map((s) => (
+                    <button
+                      key={s.id}
+                      type="button"
+                      className={`demo-chip ${username === s.username ? "active" : ""}`}
+                      onClick={() => handleDemoQuickFill(s)}
+                      title={`${s.name} (${s.dept}) - Trust ${s.trustScore}%`}
+                    >
+                      {s.username}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </form>
           )}
         </div>
       </main>

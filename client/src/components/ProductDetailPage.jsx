@@ -1,6 +1,6 @@
 import React from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { ArrowLeft, Star, ShieldCheck, CheckCircle2, User, ChevronRight } from "lucide-react";
+import { ArrowLeft, Star, ShieldCheck, CheckCircle2, ChevronRight, MapPin, Compass } from "lucide-react";
 import { getResource, getStudent } from "../data/mockData.js";
 import "./ProductDetailPage.css";
 
@@ -10,15 +10,15 @@ export default function ProductDetailPage() {
 
   const resourceId = parseInt(id, 10) || 1;
   const resource = getResource(resourceId);
-  const owner = getStudent(resource.ownerId);
+  const owner = getStudent(resource?.ownerId || 1);
 
   if (!resource) {
     return (
       <div className="product-page-container">
-        <div className="product-not-found">
+        <div className="product-not-found" role="alert">
           <h2>Product Not Found</h2>
-          <button onClick={() => navigate("/")} className="btn-back">
-            ← Return to Landing Page
+          <button onClick={() => navigate("/explore")} className="btn-back">
+            ← Return to Explore Listings
           </button>
         </div>
       </div>
@@ -28,45 +28,56 @@ export default function ProductDetailPage() {
   const rating = owner?.avgRating || 4.9;
   const reviewsCount = owner?.lendCount ? owner.lendCount * 2 + 3 : 24;
 
+  const handleStartBorrowing = () => {
+    navigate(`/app/borrow/${resource.id}`, { state: { resourceId: resource.id } });
+  };
+
   return (
     <div className="product-page-root">
+      {/* Skip Link */}
+      <a href="#product-main" className="skip-to-content">
+        Skip to product details
+      </a>
+
       {/* Top Header / Navigation */}
-      <header className="product-navbar">
-        <button onClick={() => navigate(-1)} className="product-nav-back">
+      <header className="product-navbar" role="banner">
+        <button onClick={() => navigate(-1)} className="product-nav-back" aria-label="Go back to previous page">
           <ArrowLeft size={18} />
           <span>Back</span>
         </button>
 
-        <div className="product-brand" onClick={() => navigate("/")}>
+        <div className="product-brand" onClick={() => navigate("/")} role="button" tabIndex={0}>
           <span className="product-brand-title">CAMPUS CIRCULAR</span>
         </div>
 
         <div className="product-nav-right">
-          <button onClick={() => navigate("/app")} className="product-nav-app-btn">
-            Go to App Shell
+          <button onClick={() => navigate("/explore")} className="product-nav-app-btn" aria-label="Explore campus listings">
+            <Compass size={15} />
+            <span>Explore Listings</span>
           </button>
         </div>
       </header>
 
-      {/* Main Split Layout Container (noon.world inspired) */}
-      <main className="product-main-stage">
+      {/* Main Split Layout Container */}
+      <main className="product-main-stage" id="product-main" role="main">
         <div className="product-split-grid">
           {/* Left Column: Product Image Showcase */}
           <div className="product-gallery-col">
             <div className="product-image-card">
               <div className="product-condition-badge">
-                CONDITION: {resource.condition}% OK
+                CONDITION: {resource.condition}% VERIFIED
               </div>
               <img
-                src={resource.image || "https://pngimg.com/uploads/photo_camera/photo_camera_PNG101641.png"}
-                alt={resource.name}
+                src={resource.image}
+                alt={`${resource.name} - ${resource.category}`}
                 className="product-hero-image"
                 onError={(e) => {
-                  e.target.src = "https://pngimg.com/uploads/photo_camera/photo_camera_PNG101641.png";
+                  e.target.src = "https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80";
                 }}
               />
               <div className="product-location-tag">
-                📍 Pick up at {resource.location}
+                <MapPin size={14} className="location-icon" />
+                <span>Pick up at {resource.location}</span>
               </div>
             </div>
           </div>
@@ -75,9 +86,9 @@ export default function ProductDetailPage() {
           <div className="product-details-col">
             {/* Rating Row */}
             <div className="product-rating-row">
-              <div className="stars-group">
+              <div className="stars-group" aria-label={`Rating: ${rating} out of 5 stars`}>
                 {[...Array(5)].map((_, i) => (
-                  <Star key={i} size={14} fill="#000" color="#000" />
+                  <Star key={i} size={14} fill="#000" color="#000" aria-hidden="true" />
                 ))}
               </div>
               <span className="rating-score">({rating})</span>
@@ -87,7 +98,7 @@ export default function ProductDetailPage() {
             {/* Product Title */}
             <h1 className="product-title-text">{resource.name.toUpperCase()}</h1>
 
-            {/* Feature Pills (noon.world style) */}
+            {/* Feature Pills */}
             <div className="product-tags-row">
               <span className="tag-pill">{resource.category.toUpperCase()}</span>
               {resource.tags?.map((tag, idx) => (
@@ -125,7 +136,7 @@ export default function ProductDetailPage() {
 
             <div className="product-divider" />
 
-            {/* Pricing / Terms Selector (noon.world style rate options) */}
+            {/* Pricing / Terms Selector */}
             <div className="rate-options-section">
               <h4 className="section-mini-title">RENTAL & DEPOSIT RATES:</h4>
               <div className="rate-cards-grid">
@@ -149,14 +160,16 @@ export default function ProductDetailPage() {
 
             <div className="product-divider" />
 
-            {/* Owner & Trust Score Section (Clickable to Profile) */}
+            {/* Owner & Trust Score Section */}
             <div className="owner-profile-section">
               <h4 className="section-mini-title">ITEM CUSTODIAN & LENDER:</h4>
 
               <div
                 className="owner-card-interactive"
                 onClick={() => navigate(`/profile/${owner.id}`)}
-                title={`View ${owner.name}'s profile`}
+                role="button"
+                tabIndex={0}
+                aria-label={`View lender profile: ${owner.name}`}
               >
                 <div className="owner-card-left">
                   <div className="owner-avatar-circle">{owner.initials}</div>
@@ -192,7 +205,8 @@ export default function ProductDetailPage() {
             <div className="product-cta-group">
               <button
                 className="btn-borrow-now"
-                onClick={() => navigate("/app", { state: { resourceId: resource.id } })}
+                onClick={handleStartBorrowing}
+                aria-label={`Initiate borrowing agreement for ${resource.name}`}
               >
                 <span>Draft Borrowing Agreement</span>
                 <ChevronRight size={18} />
@@ -203,7 +217,7 @@ export default function ProductDetailPage() {
       </main>
 
       {/* Minimal Footer */}
-      <footer className="product-footer">
+      <footer className="product-footer" role="contentinfo">
         <span>© 2026 Campus Circular • Peer Trust Ledger</span>
         <span>Verified Campus Resource Protocol</span>
       </footer>
