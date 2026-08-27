@@ -190,17 +190,6 @@ export default function ExplorePage() {
 
         {/* Topbar Right Controls */}
         <div className="explore-topbar-right">
-          {/* Need Finder Shortcut */}
-          <button
-            className="explore-needfinder-btn"
-            onClick={() => navigate("/find")}
-            aria-label="Open Need Finder canvas"
-            title="Open Interactive Need Finder"
-          >
-            <Sparkles size={14} />
-            <span>Need Finder</span>
-          </button>
-
           {/* List Gear Button for Lister or Admin */}
           {(user?.role === "lister" || user?.role === "admin") && (
             <button

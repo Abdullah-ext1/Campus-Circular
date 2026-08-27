@@ -74,7 +74,7 @@ export default function AuthPage() {
           <div className="auth-card-header">
             <h1 className="auth-title">Sign In</h1>
             <p className="auth-subtitle">
-              Choose from verified campus peer profiles or enter any student handle
+              Sign in to your campus student account
             </p>
           </div>
 
@@ -172,24 +172,6 @@ export default function AuthPage() {
               <button type="submit" className="auth-submit-btn">
                 Sign In
               </button>
-
-              {/* Quick autofill directory chips */}
-              <div className="demo-accounts-row">
-                <span className="demo-label">Available Student Profiles:</span>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "6px", width: "100%", marginTop: "4px" }}>
-                  {students.map((s) => (
-                    <button
-                      key={s.id}
-                      type="button"
-                      className={`demo-chip ${username === s.username ? "active" : ""}`}
-                      onClick={() => handleDemoQuickFill(s)}
-                      title={`${s.name} (${s.dept}) - Trust ${s.trustScore}%`}
-                    >
-                      {s.username}
-                    </button>
-                  ))}
-                </div>
-              </div>
             </form>
           )}
         </div>
